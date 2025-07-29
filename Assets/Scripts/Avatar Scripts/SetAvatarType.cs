@@ -18,6 +18,11 @@ public class SetAvatarType : MonoBehaviour
     public GameObject rightTarget;
     public GameObject fullBody;
 
+    public GameObject leftHandHT;
+    public GameObject rightHandHT;
+    public GameObject handVisualizer;
+
+
 
 
     // Start is called before the first frame update
@@ -44,6 +49,10 @@ public class SetAvatarType : MonoBehaviour
                 headTarget.SetActive(false);
                 leftTarget.SetActive(false);
                 rightTarget.SetActive(false);
+
+                leftHandHT.SetActive(false);
+                rightHandHT.SetActive(false);
+                handVisualizer.SetActive(false);
             }
             else if (value == 1)
             {
@@ -57,6 +66,10 @@ public class SetAvatarType : MonoBehaviour
                 headTarget.SetActive(false);
                 leftTarget.SetActive(false);
                 rightTarget.SetActive(false);
+
+                leftHandHT.SetActive(false);
+                rightHandHT.SetActive(false);
+                handVisualizer.SetActive(false);
             }
 
             else if(value == 2)
@@ -71,6 +84,28 @@ public class SetAvatarType : MonoBehaviour
                 headTarget.SetActive(true);
                 leftTarget.SetActive(true);
                 rightTarget.SetActive(true);
+
+                leftHandHT.SetActive(false);
+                rightHandHT.SetActive(false);
+                handVisualizer.SetActive(false);
+            }
+
+            else if(value == 3)
+            {
+                leftController.SetActive(false);
+                rightController.SetActive(false);
+
+                leftHand.SetActive(false);
+                rightHand.SetActive(false);
+
+                fullBody.SetActive(false);
+                headTarget.SetActive(false);
+                leftTarget.SetActive(false);
+                rightTarget.SetActive(false);
+
+                leftHandHT.SetActive(true);
+                rightHandHT.SetActive(true);
+                handVisualizer.SetActive(true);
             }
         }
     }

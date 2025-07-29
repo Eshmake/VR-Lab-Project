@@ -17,6 +17,10 @@ public class PrefsManager : MonoBehaviour
     public GameObject rightTarget;
     public GameObject fullBody;
 
+    public GameObject leftHandHT;
+    public GameObject rightHandHT;
+    public GameObject handVisualizer;
+
 
     void Start()
     {
@@ -70,6 +74,10 @@ public class PrefsManager : MonoBehaviour
                 headTarget.SetActive(false);
                 leftTarget.SetActive(false);
                 rightTarget.SetActive(false);
+
+                leftHandHT.SetActive(false);
+                rightHandHT.SetActive(false);
+                handVisualizer.SetActive(false);
             }
             else if (avatarIndex == 1)
             {
@@ -83,6 +91,10 @@ public class PrefsManager : MonoBehaviour
                 headTarget.SetActive(false);
                 leftTarget.SetActive(false);
                 rightTarget.SetActive(false);
+
+                leftHandHT.SetActive(false);
+                rightHandHT.SetActive(false);
+                handVisualizer.SetActive(false);
             }
 
             else if (avatarIndex == 2)
@@ -97,6 +109,27 @@ public class PrefsManager : MonoBehaviour
                 headTarget.SetActive(true);
                 leftTarget.SetActive(true);
                 rightTarget.SetActive(true);
+
+                leftHandHT.SetActive(false);
+                rightHandHT.SetActive(false);
+                handVisualizer.SetActive(false);
+            }
+            else if (avatarIndex == 3)
+            {
+                leftController.SetActive(false);
+                rightController.SetActive(false);
+
+                leftHand.SetActive(false);
+                rightHand.SetActive(false);
+
+                fullBody.SetActive(false);
+                headTarget.SetActive(false);
+                leftTarget.SetActive(false);
+                rightTarget.SetActive(false);
+
+                leftHandHT.SetActive(true);
+                rightHandHT.SetActive(true);
+                handVisualizer.SetActive(true);
             }
         }
         else
@@ -113,6 +146,10 @@ public class PrefsManager : MonoBehaviour
             headTarget.SetActive(false);
             leftTarget.SetActive(false);
             rightTarget.SetActive(false);
+
+            leftHandHT.SetActive(false);
+            rightHandHT.SetActive(false);
+            handVisualizer.SetActive(false);
         }
     }
     
