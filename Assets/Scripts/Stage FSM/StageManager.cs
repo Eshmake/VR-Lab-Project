@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StageManager : MonoBehaviour
 {
-    private List<StageBase> stages = new List<StageBase>();
+    public List<StageBase> stages = new List<StageBase>();
     private int currentStageIndex = 0;
 
     public event Action<StageBase> OnStageChanged;

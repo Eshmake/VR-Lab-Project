@@ -3,22 +3,24 @@ using UnityEngine.UI;
 
 public class InstructionUI : MonoBehaviour
 {
-    public Text instructionText;
     public StageManager stageManager;
+    public Text instructionText; // Or TextMeshProUGUI if using TMP
 
-    void Start()
+    void OnEnable()
     {
-        stageManager.OnStageChanged += UpdateInstruction;
-        UpdateInstruction(stageManager.CurrentStage); // set initial
+        stageManager.OnStageChanged += HandleStageChanged;
     }
 
-    void OnDestroy()
+    void OnDisable()
     {
-        stageManager.OnStageChanged -= UpdateInstruction;
+        stageManager.OnStageChanged -= HandleStageChanged;
     }
 
-    void UpdateInstruction(StageBase newStage)
+    private void HandleStageChanged(StageBase newStage)
     {
-        instructionText.text = newStage.GetInstructionText();
+        if (instructionText != null)
+        {
+            instructionText.text = newStage.GetInstructionText();
+        }
     }
 }
