@@ -6,6 +6,8 @@ public class IntroStage : StageBase
 
     public AudioSource introAudio;
     public AudioSource doorShut;
+    public AudioSource ambience;
+
     public GameObject introPanel;
     public GameObject door;
     public GameObject lights;
@@ -22,7 +24,7 @@ public class IntroStage : StageBase
         enteredLab = false;
         IsComplete = false;
 
-        StartCoroutine(PlayAfterDelay(2f));
+        StartCoroutine(PlayAfterDelay(2f, introAudio));
 
     }
 
@@ -35,6 +37,8 @@ public class IntroStage : StageBase
             door.SetActive(true);
             IsComplete = true;
             doorShut.Play();
+            StartCoroutine(PlayAfterDelay(1f, ambience));
+
         }
 
     }
@@ -54,13 +58,13 @@ public class IntroStage : StageBase
         enteredLab = true;
     }
 
-    private IEnumerator PlayAfterDelay(float delay)
+    private IEnumerator PlayAfterDelay(float delay, AudioSource audio)
     {
         yield return new WaitForSeconds(delay);
 
-        if (introAudio != null)
+        if (audio != null)
         {
-            introAudio.Play();
+            audio.Play();
         }
     }
 }
