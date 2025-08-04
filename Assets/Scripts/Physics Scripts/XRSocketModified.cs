@@ -3,6 +3,7 @@
 // 1. Snapping eligibility is determined by tag
 // 2. Audio plays once on successful snap
 // 3. Prevent untagged objects from being hovered or affected
+// 4. Optionally disable convex on snap, and re-enable on release/grab again
 
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -17,7 +18,11 @@ public class XRSocketInteractorWithAudio : UnityEngine.XR.Interaction.Toolkit.In
     [Tooltip("Audio source to play when an object successfully snaps.")]
     public AudioSource snapAudioSource;
 
+    [Header("Snapped Object Adjustments")]
+    public bool adjustColliderConvex = true;
+
     private UnityEngine.XR.Interaction.Toolkit.Interactables.IXRSelectInteractable lastSnappedInteractable;
+    private MeshCollider lastMeshCollider;
 
     protected override void OnSelectEntered(SelectEnterEventArgs args)
     {
@@ -32,19 +37,33 @@ public class XRSocketInteractorWithAudio : UnityEngine.XR.Interaction.Toolkit.In
 
         base.OnSelectEntered(args);
 
-        // Prevent duplicate sounds on re-snap
         if (args.interactableObject != lastSnappedInteractable)
         {
             lastSnappedInteractable = args.interactableObject;
+
             if (snapAudioSource != null)
                 snapAudioSource.Play();
+        }
+
+        if (adjustColliderConvex)
+        {
+            lastMeshCollider = snappedObject.GetComponent<MeshCollider>();
+
+            if (lastMeshCollider != null)
+                lastMeshCollider.convex = false;
         }
     }
 
     protected override void OnSelectExited(SelectExitEventArgs args)
     {
         base.OnSelectExited(args);
-        lastSnappedInteractable = null; // Reset so snap sound can play again next time
+        lastSnappedInteractable = null;
+
+        if (adjustColliderConvex && lastMeshCollider != null)
+        {
+            lastMeshCollider.convex = true;
+            lastMeshCollider = null;
+        }
     }
 
     public override bool CanHover(UnityEngine.XR.Interaction.Toolkit.Interactables.IXRHoverInteractable interactable)

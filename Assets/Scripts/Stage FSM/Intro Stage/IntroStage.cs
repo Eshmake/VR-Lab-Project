@@ -12,6 +12,8 @@ public class IntroStage : StageBase
     public GameObject door;
     public GameObject lights;
 
+    public AudioDelayPlayer audioPlayer;
+
     private bool enteredLab = false;
 
     public override void Enter()
@@ -24,7 +26,7 @@ public class IntroStage : StageBase
         enteredLab = false;
         IsComplete = false;
 
-        StartCoroutine(PlayAfterDelay(2f, introAudio));
+        audioPlayer.PlayAfterDelay(introAudio, 2f);
 
     }
 
@@ -37,8 +39,8 @@ public class IntroStage : StageBase
             door.SetActive(true);
             IsComplete = true;
             doorShut.Play();
-            StartCoroutine(PlayAfterDelay(1f, ambience));
 
+            audioPlayer.PlayAfterDelay(ambience, 2f);
         }
 
     }
@@ -58,13 +60,4 @@ public class IntroStage : StageBase
         enteredLab = true;
     }
 
-    private IEnumerator PlayAfterDelay(float delay, AudioSource audio)
-    {
-        yield return new WaitForSeconds(delay);
-
-        if (audio != null)
-        {
-            audio.Play();
-        }
-    }
 }
