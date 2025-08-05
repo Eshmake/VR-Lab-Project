@@ -16,9 +16,11 @@ public class DirtTriggerZone : MonoBehaviour
     [Tooltip("The Shoveling Stage Manager that tracks dirt fill/dump progress.")]
     public ShovelingStage stageManager;
 
+    public bool isActive = true;
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other != shovelHeadCollider || stageManager == null)
+        if (!isActive || other != shovelHeadCollider || stageManager == null)
             return;
 
         // Make sure the trigger that was entered is our assigned one

@@ -12,6 +12,9 @@ public class ShovelingStage : StageBase
 
     private int dirtDeposits = 0;
 
+    public DirtTriggerZone bucketZone;
+    public DirtTriggerZone pailZone;
+
     public void NotifyShovelFilled()
     {
         // Optional: play pail scoop SFX or animation
@@ -28,6 +31,7 @@ public class ShovelingStage : StageBase
             if (dirtDeposits == bucketDirtLevels.Length)
             {
                 IsComplete = true;
+
             }
         }
     }
@@ -54,7 +58,11 @@ public class ShovelingStage : StageBase
 
     public override void Exit()
     {
-
+        if(bucketZone != null)
+            bucketZone.isActive = false;
+        
+        if(pailZone != null)
+            pailZone.isActive = false; 
     }
 
     public override string GetInstructionText()
