@@ -4,6 +4,7 @@ using System.Collections;
 public class ShovelingStage : StageBase
 {
     public AudioSource stageInstructions;
+    public AudioSource stageComplete;
     public AudioDelayPlayer audioPlayer;
 
     public GameObject snapZone;
@@ -39,7 +40,7 @@ public class ShovelingStage : StageBase
     public override void Enter()
     {
         IsComplete = false;
-        audioPlayer.PlayAfterDelay(stageInstructions, 4f);
+        audioPlayer.PlayAfterDelay(stageInstructions, 5f);
 
         snapZone.SetActive(true);
 
@@ -47,6 +48,12 @@ public class ShovelingStage : StageBase
 
         foreach (var dirt in bucketDirtLevels)
             dirt.SetActive(false);
+
+        if (bucketZone != null)
+            bucketZone.isActive = true;
+
+        if (pailZone != null)
+            pailZone.isActive = true;
 
     }
 
@@ -62,7 +69,9 @@ public class ShovelingStage : StageBase
             bucketZone.isActive = false;
         
         if(pailZone != null)
-            pailZone.isActive = false; 
+            pailZone.isActive = false;
+
+        audioPlayer.PlayAfterDelay(stageComplete, 2f);
     }
 
     public override string GetInstructionText()

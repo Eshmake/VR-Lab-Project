@@ -4,12 +4,13 @@
 // 2. Audio plays once on successful snap
 // 3. Prevent untagged objects from being hovered or affected
 // 4. Optionally disable convex on snap, and re-enable on release/grab again
+// 5. Searches hierarchy for MeshCollider automatically
 
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
 [AddComponentMenu("XR/Interactors/XR Socket Interactor With Audio")]
-public class XRSocketInteractorWithAudio : UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor
+public class XRSocketModified : UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor
 {
     [Header("Custom Socket Settings")]
     [Tooltip("Only objects with this tag will be considered for snapping.")]
@@ -47,7 +48,7 @@ public class XRSocketInteractorWithAudio : UnityEngine.XR.Interaction.Toolkit.In
 
         if (adjustColliderConvex)
         {
-            lastMeshCollider = snappedObject.GetComponent<MeshCollider>();
+            lastMeshCollider = snappedObject.GetComponentInChildren<MeshCollider>();
 
             if (lastMeshCollider != null)
                 lastMeshCollider.convex = false;

@@ -13,7 +13,7 @@ public class DirtTriggerZone : MonoBehaviour
     [Tooltip("The specific collider on the shovel (e.g., shovel head) that should trigger this zone.")]
     public Collider shovelHeadCollider;
 
-    [Tooltip("The Shoveling Stage Manager that tracks dirt fill/dump progress.")]
+    [Tooltip("The Stage Manager that tracks dirt fill/dump progress.")]
     public ShovelingStage stageManager;
 
     public bool isActive = true;
