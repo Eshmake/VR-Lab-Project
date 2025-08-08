@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class SieveStage : StageBase
+public class SieveStage : StageBase, IShovelFlowHandler
 {
     public AudioSource stageInstructions;
     public AudioSource stageComplete;
@@ -11,12 +11,15 @@ public class SieveStage : StageBase
     public GameObject snapZone2;
     public GameObject snapZone3;
 
-    public DirtTriggerZone bucketZone;
-    public DirtTriggerZone sieveZone;
+    public GameObject bucketZoneObject;
+    public GameObject sieveZoneObject;
 
     public GameObject bucketLayer;
     public GameObject sieveLayer;
     public GameObject shovelLayer;
+    public GameObject stoneLayer;
+
+    public HorizontalShakeTask horizontal;
 
 
     public void OnShovelFilled(ShovelDirt shovel)
@@ -37,11 +40,19 @@ public class SieveStage : StageBase
             sieveLayer.SetActive(true);
         }
 
-        if (bucketZone != null)
-            bucketZone.isActive = false;
+        if (bucketZoneObject != null)
+            bucketZoneObject.SetActive(false);
 
-        if (sieveZone != null)
-            sieveZone.isActive = false;
+        if (sieveZoneObject != null)
+            sieveZoneObject.SetActive(false);
+
+        horizontal.enabled = true;
+
+    }
+
+    public void OnBucketSnapped(GameObject bucket)
+    {
+        // NA
     }
 
 
@@ -54,11 +65,11 @@ public class SieveStage : StageBase
         snapZone2.SetActive(true);
         snapZone3.SetActive(true);
 
-        if (bucketZone != null)
-            bucketZone.isActive = true;
+        if (bucketZoneObject != null)
+            bucketZoneObject.SetActive(true);
 
-        if (sieveZone != null)
-            sieveZone.isActive = true;
+        if (sieveZoneObject != null)
+            sieveZoneObject.SetActive(true);
 
 
     }
@@ -66,6 +77,17 @@ public class SieveStage : StageBase
     public override void UpdateStage()
     {
 
+        if (horizontal.isShakenComplete)
+        {
+            IsComplete = true;
+
+            if(sieveLayer != null && stoneLayer != null)
+            {
+                sieveLayer.SetActive(false);
+                stoneLayer.SetActive(true);
+            }
+          
+        }
 
     }
 

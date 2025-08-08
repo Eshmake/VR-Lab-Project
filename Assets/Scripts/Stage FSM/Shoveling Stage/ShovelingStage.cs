@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class ShovelingStage : StageBase
+public class ShovelingStage : StageBase, IShovelFlowHandler
 {
     public AudioSource stageInstructions;
     public AudioSource stageComplete;
@@ -13,12 +13,12 @@ public class ShovelingStage : StageBase
 
     private int dirtDeposits = 0;
 
-    public DirtTriggerZone bucketZone;
-    public DirtTriggerZone pailZone;
+    public GameObject bucketZoneObject;
+    public GameObject pailZoneObject;
 
     public void OnShovelFilled(ShovelDirt shovel)
     {
-        // Optional: play pail scoop SFX or animation
+        // NA
     }
 
     public void OnShovelDumped(ShovelDirt shovel)
@@ -37,6 +37,11 @@ public class ShovelingStage : StageBase
         }
     }
 
+    public void OnBucketSnapped(GameObject bucket)
+    {
+        // NA
+    }
+
     public override void Enter()
     {
         IsComplete = false;
@@ -49,12 +54,11 @@ public class ShovelingStage : StageBase
         foreach (var dirt in bucketDirtLevels)
             dirt.SetActive(false);
 
-        if (bucketZone != null)
-            bucketZone.isActive = true;
+        if (bucketZoneObject != null)
+            bucketZoneObject.SetActive(true);
 
-        if (pailZone != null)
-            pailZone.isActive = true;
-
+        if (pailZoneObject != null)
+            pailZoneObject.SetActive(true);
     }
 
     public override void UpdateStage()
@@ -65,11 +69,11 @@ public class ShovelingStage : StageBase
 
     public override void Exit()
     {
-        if(bucketZone != null)
-            bucketZone.isActive = false;
-        
-        if(pailZone != null)
-            pailZone.isActive = false;
+        if (bucketZoneObject != null)
+            bucketZoneObject.SetActive(false);
+
+        if (pailZoneObject != null)
+            pailZoneObject.SetActive(false);
 
         audioPlayer.PlayAfterDelay(stageComplete, 2f);
     }
