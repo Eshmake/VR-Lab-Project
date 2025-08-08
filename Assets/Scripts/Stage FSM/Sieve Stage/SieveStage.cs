@@ -19,7 +19,7 @@ public class SieveStage : StageBase
     public GameObject shovelLayer;
 
 
-    public void NotifyShovelFilled()
+    public void OnShovelFilled(ShovelDirt shovel)
     {
         if (shovelLayer != null && bucketLayer != null)
         {
@@ -29,7 +29,7 @@ public class SieveStage : StageBase
         
     }
 
-    public void NotifyShovelDumped()
+    public void OnShovelDumped(ShovelDirt shovel)
     {
         if (shovelLayer != null && sieveLayer != null)
         {

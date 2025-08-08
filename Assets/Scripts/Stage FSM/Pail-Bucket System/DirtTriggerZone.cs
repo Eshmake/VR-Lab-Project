@@ -13,18 +13,25 @@ public class DirtTriggerZone : MonoBehaviour
     [Tooltip("The specific collider on the shovel (e.g., shovel head) that should trigger this zone.")]
     public Collider shovelHeadCollider;
 
-    [Tooltip("The Stage Manager that tracks dirt fill/dump progress.")]
-    public ShovelingStage stageManager;
+    [Tooltip("Any component that implements Pail-Bucket System")]
+    public MonoBehaviour handlerBehaviour;
+    public IShovelFlowHandler handler;
 
     public bool isActive = true;
 
+
+    void Awake()
+    {
+        handler = handlerBehaviour as IShovelFlowHandler;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (!isActive || other != shovelHeadCollider || stageManager == null)
+        if (!isActive || other != shovelHeadCollider || handler == null)
             return;
 
         // Make sure the trigger that was entered is our assigned one
-        if (!zoneTrigger.bounds.Intersects(shovelHeadCollider.bounds))
+        if (zoneTrigger != null && !zoneTrigger.bounds.Intersects(shovelHeadCollider.bounds))
             return;
 
         var shovel = shovelHeadCollider.GetComponentInParent<ShovelDirt>();
@@ -34,12 +41,12 @@ public class DirtTriggerZone : MonoBehaviour
         if (zoneType == ZoneType.Pail && !shovel.IsFull)
         {
             shovel.Fill();
-            stageManager.NotifyShovelFilled();
+            handler.OnShovelFilled(shovel);
         }
         else if (zoneType == ZoneType.Bucket && shovel.IsFull)
         {
             shovel.Empty();
-            stageManager.NotifyShovelDumped();
+            handler.OnShovelDumped(shovel);
         }
     }
 }

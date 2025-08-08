@@ -16,12 +16,12 @@ public class ShovelingStage : StageBase
     public DirtTriggerZone bucketZone;
     public DirtTriggerZone pailZone;
 
-    public void NotifyShovelFilled()
+    public void OnShovelFilled(ShovelDirt shovel)
     {
         // Optional: play pail scoop SFX or animation
     }
 
-    public void NotifyShovelDumped()
+    public void OnShovelDumped(ShovelDirt shovel)
     {
 
         if (dirtDeposits < bucketDirtLevels.Length)
