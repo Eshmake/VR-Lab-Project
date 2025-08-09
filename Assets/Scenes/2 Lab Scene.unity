@@ -2481,8 +2481,6 @@ MonoBehaviour:
   zoneTrigger: {fileID: 1304467524}
   shovelHeadCollider: {fileID: 1344189717}
   handlerBehaviour: {fileID: 1932673472}
-  test: {fileID: 1786780706}
-  audioPlayer: {fileID: 527685523}
   isActive: 1
 --- !u!1 &287396025
 GameObject:
@@ -11603,6 +11601,59 @@ MonoBehaviour:
   shovelLayer: {fileID: 8771091788659195114}
   stoneLayer: {fileID: 8008524372200739839}
   horizontal: {fileID: 308736257}
+--- !u!1 &748893699
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 748893700}
+  - component: {fileID: 748893701}
+  m_Layer: 0
+  m_Name: Mute Collider 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &748893700
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 748893699}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.484, y: -1.537, z: -10.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1489635051}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &748893701
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 748893699}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.79868126, y: 0.66514075, z: 3.0705833}
+  m_Center: {x: -2.5486627, y: 0.25193614, z: 0.7451706}
 --- !u!1001 &776723628
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26571,8 +26622,6 @@ MonoBehaviour:
   zoneTrigger: {fileID: 1304467524}
   shovelHeadCollider: {fileID: 704570804}
   handlerBehaviour: {fileID: 737964122}
-  test: {fileID: 0}
-  audioPlayer: {fileID: 0}
   isActive: 1
 --- !u!1 &1228807299
 GameObject:
@@ -28962,6 +29011,7 @@ Transform:
   m_Children:
   - {fileID: 267762290}
   - {fileID: 1197299156}
+  - {fileID: 748893700}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1506418707
@@ -31774,8 +31824,6 @@ MonoBehaviour:
   zoneTrigger: {fileID: 824390292}
   shovelHeadCollider: {fileID: 1344189717}
   handlerBehaviour: {fileID: 1932673472}
-  test: {fileID: 1786780706}
-  audioPlayer: {fileID: 527685523}
   isActive: 1
 --- !u!1 &1761225007
 GameObject:
@@ -38639,8 +38687,6 @@ MonoBehaviour:
   zoneTrigger: {fileID: 1443976478}
   shovelHeadCollider: {fileID: 704570804}
   handlerBehaviour: {fileID: 737964122}
-  test: {fileID: 0}
-  audioPlayer: {fileID: 0}
   isActive: 1
 --- !u!114 &2032742420 stripped
 MonoBehaviour:
@@ -62998,6 +63044,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   muteZones:
   - {fileID: 1197299157}
+  - {fileID: 748893701}
 --- !u!114 &8054626624440087546
 MonoBehaviour:
   m_ObjectHideFlags: 0

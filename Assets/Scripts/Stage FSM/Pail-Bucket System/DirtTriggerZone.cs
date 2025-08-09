@@ -8,7 +8,7 @@ public class DirtTriggerZone : MonoBehaviour
     public ZoneType zoneType;
 
     [Tooltip("Trigger collider that detects entry. If null, defaults to this GameObject’s collider.")]
-    public Collider zoneTrigger;
+    public Collider zoneTrigger; // Can be on another GameObject
 
     [Tooltip("The specific collider on the shovel (e.g., shovel head) that should trigger this zone.")]
     public Collider shovelHeadCollider;
@@ -17,56 +17,69 @@ public class DirtTriggerZone : MonoBehaviour
     public MonoBehaviour handlerBehaviour;
     public IShovelFlowHandler handler;
 
-    public AudioSource test;
-    public AudioDelayPlayer audioPlayer;
-
-
-
     public bool isActive = true;
 
-    void Awake()
+    private void Awake()
     {
-        audioPlayer.PlayAfterDelay(test, 2f);
         handler = handlerBehaviour as IShovelFlowHandler;
+
         if (zoneTrigger == null)
             zoneTrigger = GetComponent<Collider>();
 
         if (zoneTrigger != null && !zoneTrigger.isTrigger)
             zoneTrigger.isTrigger = true;
+
+        if (zoneTrigger != null)
+        {
+            // Add a forwarding helper if the collider isn't on this GameObject
+            if (zoneTrigger.gameObject != gameObject)
+            {
+                var forwarder = zoneTrigger.gameObject.AddComponent<TriggerForwarder>();
+                forwarder.target = this;
+            }
+        }
     }
 
-    private void OnTriggerEnter(Collider other)
+    // This gets called directly or via TriggerForwarder
+    public void HandleTriggerEnter(Collider other)
     {
-        audioPlayer.PlayAfterDelay(test, 2f);
-
-        if (!isActive || other != shovelHeadCollider || handler == null)
+        if (!isActive || handler == null)
             return;
 
-        audioPlayer.PlayAfterDelay(test, 2f);
-
-        // Ensure the triggered collider is the assigned trigger
-        if (zoneTrigger != null && other != shovelHeadCollider)
+        if (other != shovelHeadCollider)
             return;
-
-        audioPlayer.PlayAfterDelay(test, 2f);
 
         var shovel = shovelHeadCollider.GetComponentInParent<ShovelDirt>();
         if (shovel == null)
             return;
 
-        audioPlayer.PlayAfterDelay(test, 2f);
-
         if (zoneType == ZoneType.Pail && !shovel.IsFull)
         {
-            audioPlayer.PlayAfterDelay(test, 2f);
             shovel.Fill();
             handler.OnShovelFilled(shovel);
         }
         else if (zoneType == ZoneType.Bucket && shovel.IsFull)
         {
-            audioPlayer.PlayAfterDelay(test, 2f);
             shovel.Empty();
             handler.OnShovelDumped(shovel);
         }
+    }
+
+    // Used when the collider is on the same GameObject as the script
+    private void OnTriggerEnter(Collider other)
+    {
+        HandleTriggerEnter(other);
+    }
+}
+
+// Small helper to forward trigger events
+public class TriggerForwarder : MonoBehaviour
+{
+    public DirtTriggerZone target;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (target != null)
+            target.HandleTriggerEnter(other);
     }
 }

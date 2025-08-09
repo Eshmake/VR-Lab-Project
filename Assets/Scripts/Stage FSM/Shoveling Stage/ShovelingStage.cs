@@ -16,6 +16,9 @@ public class ShovelingStage : StageBase, IShovelFlowHandler
     public GameObject bucketZoneObject;
     public GameObject pailZoneObject;
 
+    private DirtTriggerZone bucketZoneTrigger = null;
+    private DirtTriggerZone pailZoneTrigger = null;
+
     public void OnShovelFilled(ShovelDirt shovel)
     {
         // NA
@@ -33,6 +36,9 @@ public class ShovelingStage : StageBase, IShovelFlowHandler
             {
                 IsComplete = true;
 
+                bucketZoneTrigger.isActive = false;
+                pailZoneTrigger.isActive = false;
+
             }
         }
     }
@@ -47,6 +53,9 @@ public class ShovelingStage : StageBase, IShovelFlowHandler
         IsComplete = false;
         audioPlayer.PlayAfterDelay(stageInstructions, 5f);
 
+        bucketZoneTrigger = bucketZoneObject.GetComponent<DirtTriggerZone>();
+        pailZoneTrigger = pailZoneObject.GetComponent<DirtTriggerZone>();
+
         snapZone.SetActive(true);
 
         dirtDeposits = 0;
@@ -55,10 +64,17 @@ public class ShovelingStage : StageBase, IShovelFlowHandler
             dirt.SetActive(false);
 
         if (bucketZoneObject != null)
+        {
             bucketZoneObject.SetActive(true);
+            bucketZoneTrigger.isActive = true;
+        }
 
         if (pailZoneObject != null)
+        {
             pailZoneObject.SetActive(true);
+            pailZoneTrigger.isActive = true;
+        }
+            
     }
 
     public override void UpdateStage()
@@ -69,11 +85,15 @@ public class ShovelingStage : StageBase, IShovelFlowHandler
 
     public override void Exit()
     {
+
         if (bucketZoneObject != null)
             bucketZoneObject.SetActive(false);
 
         if (pailZoneObject != null)
             pailZoneObject.SetActive(false);
+
+        bucketZoneObject = null;
+        pailZoneObject = null;
 
         audioPlayer.PlayAfterDelay(stageComplete, 2f);
     }

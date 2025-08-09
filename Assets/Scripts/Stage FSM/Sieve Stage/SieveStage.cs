@@ -21,6 +21,9 @@ public class SieveStage : StageBase, IShovelFlowHandler
 
     public HorizontalShakeTask horizontal;
 
+    private DirtTriggerZone bucketZoneTrigger = null;
+    private DirtTriggerZone sieveZoneTrigger = null;
+
 
     public void OnShovelFilled(ShovelDirt shovel)
     {
@@ -40,11 +43,8 @@ public class SieveStage : StageBase, IShovelFlowHandler
             sieveLayer.SetActive(true);
         }
 
-        if (bucketZoneObject != null)
-            bucketZoneObject.SetActive(false);
-
-        if (sieveZoneObject != null)
-            sieveZoneObject.SetActive(false);
+        bucketZoneTrigger.isActive = false;
+        sieveZoneTrigger.isActive = false;
 
         horizontal.enabled = true;
 
@@ -61,15 +61,27 @@ public class SieveStage : StageBase, IShovelFlowHandler
         IsComplete = false;
         audioPlayer.PlayAfterDelay(stageInstructions, 5f);
 
-        snapZone1.SetActive(true);
+
+        bucketZoneTrigger = bucketZoneObject.GetComponent<DirtTriggerZone>();
+        sieveZoneTrigger = sieveZoneObject.GetComponent<DirtTriggerZone>();
+
+    snapZone1.SetActive(true);
         snapZone2.SetActive(true);
         snapZone3.SetActive(true);
 
         if (bucketZoneObject != null)
+        {
             bucketZoneObject.SetActive(true);
+            bucketZoneTrigger.isActive = true;
+
+        }
+            
 
         if (sieveZoneObject != null)
+        {
             sieveZoneObject.SetActive(true);
+            sieveZoneTrigger.isActive = true;
+        }
 
 
     }
@@ -94,13 +106,22 @@ public class SieveStage : StageBase, IShovelFlowHandler
     public override void Exit()
     {
 
+        if (bucketZoneObject != null)
+            bucketZoneObject.SetActive(false);
+
+        if (sieveZoneObject != null)
+            sieveZoneObject.SetActive(false);
+
+        bucketZoneObject = null;
+        sieveZoneObject = null;
+
         audioPlayer.PlayAfterDelay(stageComplete, 2f);
 
     }
 
     public override string GetInstructionText()
     {
-        return "";
+        return "Use the workbench to pour dirt from the bucket into the sieve, and then sieve the dirt";
     }
 
 
