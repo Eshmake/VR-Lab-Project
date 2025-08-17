@@ -5,6 +5,7 @@ public class SieveStage : StageBase, IShovelFlowHandler
 {
     public AudioSource stageInstructions;
     public AudioSource stageComplete;
+    public AudioSource sieveShakeLoop;
     public AudioDelayPlayer audioPlayer;
 
     public GameObject snapZone1;
@@ -65,7 +66,7 @@ public class SieveStage : StageBase, IShovelFlowHandler
         bucketZoneTrigger = bucketZoneObject.GetComponent<DirtTriggerZone>();
         sieveZoneTrigger = sieveZoneObject.GetComponent<DirtTriggerZone>();
 
-    snapZone1.SetActive(true);
+        snapZone1.SetActive(true);
         snapZone2.SetActive(true);
         snapZone3.SetActive(true);
 
@@ -89,9 +90,30 @@ public class SieveStage : StageBase, IShovelFlowHandler
     public override void UpdateStage()
     {
 
+        if (horizontal.IsCurrentlyShaking)
+        {
+            if(sieveShakeLoop != null && !sieveShakeLoop.isPlaying)
+            {
+                sieveShakeLoop.loop = true;
+                sieveShakeLoop.Play();
+            }
+        }
+        else
+        {
+            if(sieveShakeLoop != null && sieveShakeLoop.isPlaying)
+            {
+                sieveShakeLoop.Stop();
+            }
+        }
+
         if (horizontal.isShakenComplete)
         {
             IsComplete = true;
+
+            if(sieveShakeLoop != null &&  sieveShakeLoop.isPlaying)
+            {
+                sieveShakeLoop.Stop();
+            }
 
             if(sieveLayer != null && stoneLayer != null)
             {

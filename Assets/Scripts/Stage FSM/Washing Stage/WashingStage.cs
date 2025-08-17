@@ -1,64 +1,186 @@
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 
 public class WashingStage : StageBase, IShovelFlowHandler
 {
+    [Header("Audio")]
     public AudioSource stageInstructions;
     public AudioSource stageComplete;
+    public AudioSource submerge;
     public AudioDelayPlayer audioPlayer;
+   
 
-    
+    [Header("Zones that receive shovel pour events")]
+    public GameObject bowlZoneObject;
+    public GameObject sieveZoneObject;
 
+    [Header("Snap Watchers")]
+    public SocketWatcher sinkWatcher;      // watcher on sink socket
+    public SocketWatcher counterWatcher;   // watcher on counter socket
 
+    [Header("Snap Zones")]
+    public GameObject sinkSnapZone;
+    public GameObject counterSnapZone;
+
+    [Header("Layers")]
+    public GameObject bowlLayerDry;
+    public GameObject bowlLayerWet;
+    public GameObject sieveLayer;
+    public GameObject shovelLayer;
+
+    [Header("Faucet")]
+    public FaucetController faucet;        // controller that tracks IsOn & IsOverBowl
+
+    // runtime
+    DirtTriggerZone bowlZoneTrigger;
+    DirtTriggerZone sieveZoneTrigger;
+   
+    private bool washComplete = false;
+    private bool counterSnapAfterWash = false;
+    private bool submergePlayed = false;
+
+    // --- IShovelFlowHandler ---
     public void OnShovelFilled(ShovelDirt shovel)
     {
-        
-
+        if (sieveLayer && shovelLayer) { sieveLayer.SetActive(false); shovelLayer.SetActive(true); }
     }
 
     public void OnShovelDumped(ShovelDirt shovel)
     {
-        
+        if (bowlLayerDry && shovelLayer) { shovelLayer.SetActive(false); bowlLayerDry.SetActive(true); }
 
+        bowlZoneTrigger.isActive = false;
+        sieveZoneTrigger.isActive = false;
     }
 
-    public void OnBucketSnapped(GameObject bucket)
-    {
-        // NA
-    }
-
+    public void OnBucketSnapped(GameObject bucket) { /* N/A */ }
 
     public override void Enter()
     {
         IsComplete = false;
-        audioPlayer.PlayAfterDelay(stageInstructions, 5f);
+      
 
+        if (faucet) faucet.ResetState();
 
-        
+        if (audioPlayer && stageInstructions) audioPlayer.PlayAfterDelay(stageInstructions, 5f);
 
+        if(counterSnapZone != null) { counterSnapZone.SetActive(true); }
 
+        if (sinkSnapZone != null) { sinkSnapZone.SetActive(true); }
+
+        if (bowlZoneObject)
+        {
+            bowlZoneObject.SetActive(true);
+            bowlZoneTrigger = bowlZoneObject.GetComponentInChildren<DirtTriggerZone>(true);
+            if (bowlZoneTrigger) { bowlZoneTrigger.handlerBehaviour = this; bowlZoneTrigger.isActive = true; }
+        }
+
+        if (sieveZoneObject)
+        {
+            sieveZoneObject.SetActive(true);
+            sieveZoneTrigger = sieveZoneObject.GetComponentInChildren<DirtTriggerZone>(true);
+            if (sieveZoneTrigger) { sieveZoneTrigger.handlerBehaviour = this; sieveZoneTrigger.isActive = true; }
+        }
+
+        if (sinkWatcher)
+        {
+            sinkWatcher.onSnapped.AddListener(OnBowlSnappedInSink);
+            sinkWatcher.onUnsnapped.AddListener(OnBowlUnsnappedFromSink);
+        }
+        if (counterWatcher)
+        {
+            counterWatcher.onSnapped.AddListener(OnBowlSnappedOnCounter);
+            counterWatcher.onUnsnapped.AddListener(OnBowlUnsnappedFromCounter);
+        }
+
+        if (faucet) faucet.ResetState();
+
+        // initial layer state
+        if (sieveLayer) sieveLayer.SetActive(true);
+        if (shovelLayer) shovelLayer.SetActive(false);
+        if (bowlLayerDry) bowlLayerDry.SetActive(false);
     }
 
     public override void UpdateStage()
     {
+        if (faucet != null && faucet.IsWashComplete)
+        {
+            washComplete = true;
 
-        
-
+            if(!submergePlayed)
+            {
+                submerge.Play();
+                submergePlayed = true;
+            }
+            
+            if (bowlLayerWet != null)
+            {
+                bowlLayerDry.SetActive(false);
+                bowlLayerWet.SetActive(true);
+            }
+        }
+            
     }
 
     public override void Exit()
     {
+        if (bowlZoneObject) bowlZoneObject.SetActive(false);
+        if (sieveZoneObject) sieveZoneObject.SetActive(false);
 
-        
+        if (sinkWatcher)
+        {
+            sinkWatcher.onSnapped.RemoveListener(OnBowlSnappedInSink);
+            sinkWatcher.onUnsnapped.RemoveListener(OnBowlUnsnappedFromSink);
+        }
+        if (counterWatcher)
+        {
+            counterWatcher.onSnapped.RemoveListener(OnBowlSnappedOnCounter);
+            counterWatcher.onUnsnapped.RemoveListener(OnBowlUnsnappedFromCounter);
+        }
 
-        audioPlayer.PlayAfterDelay(stageComplete, 2f);
-
+        if (audioPlayer && stageComplete) audioPlayer.PlayAfterDelay(stageComplete, 2f);
     }
 
     public override string GetInstructionText()
     {
-        return "Pour stones into bowl, wash dirt in sink, and leave dirt sumbmerged in bowl on counter.";
+        return "Pour from sieve into bowl, then snap the bowl into the sink.";
     }
 
+    // --- Socket callbacks ---
+    private void OnBowlSnappedInSink(GameObject snapped)
+    {
+        if (snapped != null && snapped.CompareTag("Bowl"))
+            faucet?.SetBowlInSink(true);
+    }
 
+    private void OnBowlUnsnappedFromSink(GameObject snapped)
+    {
+        if (snapped != null && snapped.CompareTag("Bowl"))
+            faucet?.SetBowlInSink(false);
+    }
+
+    private void OnBowlSnappedOnCounter(GameObject snapped)
+    {
+        // Ensure it's actually the bowl
+        if (snapped == null || !snapped.CompareTag("Bowl"))
+            return;
+
+        if (washComplete)
+        {
+            counterSnapAfterWash = true;
+            IsComplete = true;
+        }
+        else
+        {
+            // Snapped too early; must re-snap after wash
+            counterSnapAfterWash = false;
+        }
+    }
+
+    private void OnBowlUnsnappedFromCounter(GameObject snapped)
+    {
+        // Only reset our “post-wash” snap flag if it was the bowl
+        if (snapped != null && snapped.CompareTag("Bowl"))
+            counterSnapAfterWash = false;
+    }
 }
+
