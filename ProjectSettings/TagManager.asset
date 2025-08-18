@@ -9,6 +9,8 @@ TagManager:
   - Snappable
   - Bowl
   - BowlRinseArea
+  - Sample
+  - PlayerHand
   layers:
   - Default
   - TransparentFX
