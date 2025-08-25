@@ -1,35 +1,32 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Renderer))]
 public class RockSample : MonoBehaviour
 {
-    [Header("State")]
+    [Header("Drying State")]
     public bool IsDry { get; private set; } = false;
 
-    [Header("Visuals")]
-    [Tooltip("Renderer (or object) shown when wet.")]
-    public GameObject wetVisual;
-    [Tooltip("Renderer (or object) shown when dry.")]
-    public GameObject dryVisual;
-
     [Header("Drying Settings")]
-    [Tooltip("Seconds of rubbing needed to fully dry.")]
+    [Tooltip("Seconds of rubbing with the towel required to dry.")]
     public float dryingTime = 3f;
 
+    [Header("Materials")]
+    [Tooltip("Material to use when the rock is wet.")]
+    public Material wetMaterial;
+    [Tooltip("Material to use when the rock is dry.")]
+    public Material dryMaterial;
+
     private float dryingProgress = 0f;
+    private Renderer rockRenderer;
 
-    private void Awake()
+    void Awake()
     {
-        UpdateVisuals();
-    }
-
-    private void UpdateVisuals()
-    {
-        if (wetVisual) wetVisual.SetActive(!IsDry);
-        if (dryVisual) dryVisual.SetActive(IsDry);
+        rockRenderer = GetComponent<Renderer>();
+        ApplyWet();
     }
 
     /// <summary>
-    /// Called repeatedly while the towel is rubbing the rock.
+    /// Called each frame while the towel is rubbing the rock.
     /// </summary>
     public void DryStep(float deltaTime)
     {
@@ -38,8 +35,27 @@ public class RockSample : MonoBehaviour
         dryingProgress += deltaTime;
         if (dryingProgress >= dryingTime)
         {
-            IsDry = true;
-            UpdateVisuals();
+            SetDry();
         }
+    }
+
+    private void ApplyWet()
+    {
+        if (rockRenderer != null && wetMaterial != null)
+            rockRenderer.material = wetMaterial;
+
+        IsDry = false;
+        dryingProgress = 0f;
+        gameObject.tag = "Sample"; // still "wet" sample
+    }
+
+    private void SetDry()
+    {
+        IsDry = true;
+
+        if (rockRenderer != null && dryMaterial != null)
+            rockRenderer.material = dryMaterial;
+
+        gameObject.tag = "DryStone"; // mark dry for collectors
     }
 }

@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.Events;
 
+[System.Serializable]
+public class RockSampleEvent : UnityEvent<RockSample> { }
+
 public class DestinationCollector : MonoBehaviour
 {
     [Header("Collection Rules")]
@@ -14,30 +17,29 @@ public class DestinationCollector : MonoBehaviour
     public bool destroyOnCollect = true;
 
     [Header("Events")]
-    public UnityEvent<RockSample> onCollected;
+    public RockSampleEvent onCollected;
 
     [Header("Feedback")]
     public AudioSource collectSfx;
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag(sampleTag))
-            return;
+        // Check tag on collider or its root
+        if (!string.IsNullOrEmpty(sampleTag) && !other.CompareTag(sampleTag))
+        {
+            var root = other.attachedRigidbody ? other.attachedRigidbody.gameObject : other.transform.root.gameObject;
+            if (!root.CompareTag(sampleTag))
+                return;
+        }
 
-        RockSample sample = other.GetComponentInParent<RockSample>();
-        if (sample == null)
-            return;
+        var sample = other.GetComponentInParent<RockSample>();
+        if (sample == null) return;
+        if (requireDry && !sample.IsDry) return;
 
-        if (requireDry && !sample.IsDry)
-            return;
-
-        // Trigger collection event
         onCollected?.Invoke(sample);
-
         if (collectSfx) collectSfx.Play();
 
         if (destroyOnCollect)
             Destroy(sample.gameObject);
     }
 }
-
