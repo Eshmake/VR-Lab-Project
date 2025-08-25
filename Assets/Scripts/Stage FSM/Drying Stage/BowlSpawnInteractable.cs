@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 
 [RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable))]
@@ -18,6 +19,10 @@ public class BowlSpawnInteractable : MonoBehaviour
     public bool onlyOneActiveAtATime = true;
     [Tooltip("Optional small delay to avoid race conditions (0 = next frame).")]
     public float deferSpawnSeconds = 0f;
+
+    [Header("Events")]
+    [Tooltip("Invoked when a rock is spawned (after it is handed to the interactor).")]
+    public UnityEvent<GameObject> onRockSpawned = new UnityEvent<GameObject>();
 
     // runtime
     UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable _zone;
@@ -84,13 +89,16 @@ public class BowlSpawnInteractable : MonoBehaviour
         if (!grab) grab = go.AddComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         if (!go.TryGetComponent<Rigidbody>(out _)) go.AddComponent<Rigidbody>();
 
-        // align to interactor�s attach pose for seamless pickup
+        // align to interactor’s attach pose for seamless pickup
         var attach = interactor.GetAttachTransform(grab);
         go.transform.SetPositionAndRotation(attach.position, attach.rotation);
 
         // transfer selection: GrabZone -> rock
         interactionManager.SelectExit(interactor, _zone);
         interactionManager.SelectEnter(interactor, grab);
+
+        // 🔔 let listeners (DryingStage) know a pickup happened
+        onRockSpawned.Invoke(go);
 
         // track lifecycle to allow re-spawn later
         var life = go.GetComponent<RockLifecycleNotifier>();
@@ -106,3 +114,4 @@ public class BowlSpawnInteractable : MonoBehaviour
         _spawning = false;
     }
 }
+

@@ -20218,7 +20218,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &553207946
 Transform:
   m_ObjectHideFlags: 0
@@ -25177,6 +25177,7 @@ MonoBehaviour:
   - {fileID: 532835170}
   - {fileID: 133189877}
   sourceGravelLayer: {fileID: 1031225237858546975}
+  grabZone: {fileID: 553207945}
 --- !u!1 &743963218
 GameObject:
   m_ObjectHideFlags: 0
@@ -88751,8 +88752,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.48682785, y: 0.087203614, z: 0.5577495}
-  m_Center: {x: 0.04160118, y: 0.043123294, z: 0.025388956}
+  m_Size: {x: 0.48682785, y: 0.09180796, z: 0.5577495}
+  m_Center: {x: 0.04160118, y: 0.041968048, z: 0.025388956}
 --- !u!65 &3469287837378793316
 BoxCollider:
   m_ObjectHideFlags: 0
