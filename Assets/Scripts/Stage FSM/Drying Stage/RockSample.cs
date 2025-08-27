@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(Renderer))]
 public class RockSample : MonoBehaviour
@@ -7,55 +7,53 @@ public class RockSample : MonoBehaviour
     public bool IsDry { get; private set; } = false;
 
     [Header("Drying Settings")]
-    [Tooltip("Seconds of rubbing with the towel required to dry.")]
+    [Tooltip("Seconds of effective rubbing to dry.")]
     public float dryingTime = 3f;
 
     [Header("Materials")]
-    [Tooltip("Material to use when the rock is wet.")]
     public Material wetMaterial;
-    [Tooltip("Material to use when the rock is dry.")]
     public Material dryMaterial;
 
-    private float dryingProgress = 0f;
-    private Renderer rockRenderer;
+    [Header("Audio (optional)")]
+    [Tooltip("One-shot SFX played when the rock finishes drying.")]
+    public AudioSource dryCompleteSfx;
+
+    private float _progress;
+    private Renderer _renderer;
 
     void Awake()
     {
-        rockRenderer = GetComponent<Renderer>();
+        _renderer = GetComponent<Renderer>();
         ApplyWet();
     }
 
-    /// <summary>
-    /// Called each frame while the towel is rubbing the rock.
-    /// </summary>
-    public void DryStep(float deltaTime)
+    public void DryStep(float dt)
     {
         if (IsDry) return;
-
-        dryingProgress += deltaTime;
-        if (dryingProgress >= dryingTime)
-        {
+        _progress += dt;
+        if (_progress >= dryingTime)
             SetDry();
-        }
     }
 
     private void ApplyWet()
     {
-        if (rockRenderer != null && wetMaterial != null)
-            rockRenderer.material = wetMaterial;
-
+        if (_renderer && wetMaterial) _renderer.material = wetMaterial;
         IsDry = false;
-        dryingProgress = 0f;
-        gameObject.tag = "Sample"; // still "wet" sample
+        _progress = 0f;
+        if (CompareTag("Untagged")) gameObject.tag = "Sample";
     }
 
     private void SetDry()
     {
         IsDry = true;
+        if (_renderer && dryMaterial) _renderer.material = dryMaterial;
 
-        if (rockRenderer != null && dryMaterial != null)
-            rockRenderer.material = dryMaterial;
+        //play the completion sound once
+        if (dryCompleteSfx != null)
+            dryCompleteSfx.Play();
 
-        gameObject.tag = "DryStone"; // mark dry for collectors
+        // Optional: switch tag if you want collectors to require "DryStone"
+        // gameObject.tag = "DryStone";
     }
 }
+

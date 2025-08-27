@@ -1,3 +1,4 @@
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -17,23 +18,31 @@ public class DryingTowel : MonoBehaviour
     [Tooltip("Only affect objects with this tag (leave blank to ignore).")]
     public string sampleTag = "Sample";
 
+    [Header("Audio (optional)")]
+    [Tooltip("Looping source that plays only while rubbing is happening.")]
+    public AudioSource rubLoopSource;
+    [Tooltip("Seconds to keep the loop alive after rubbing stops (prevents stutter).")]
+    public float stopDelay = 0.15f;
+
+    // --- runtime ---
     Vector3 _lastPos;
+    float _rubHoldTimer = 0f;
+
+    // what we’re overlapping right now
+    readonly HashSet<RockSample> _overlappingSamples = new HashSet<RockSample>();
 
     void Awake()
     {
         if (towelTrigger == null)
         {
-            // fallback to a collider on this object
             towelTrigger = GetComponent<Collider>();
         }
-
         if (towelTrigger == null)
         {
             Debug.LogError("[DryingTowel] No collider assigned/found. Please assign a Trigger collider.");
             enabled = false;
             return;
         }
-
         if (!towelTrigger.isTrigger)
         {
             Debug.LogWarning("[DryingTowel] Assigned towelTrigger is not set as Trigger. Set isTrigger = true to detect overlaps.");
@@ -42,29 +51,52 @@ public class DryingTowel : MonoBehaviour
         _lastPos = transform.position;
     }
 
+    void OnTriggerEnter(Collider other)
+    {
+        var sample = GetSample(other);
+        if (sample != null)
+            _overlappingSamples.Add(sample);
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        var sample = GetSample(other);
+        if (sample != null)
+            _overlappingSamples.Remove(sample);
+
+        // if nothing left overlapping, start stop timer for loop
+        if (_overlappingSamples.Count == 0)
+            _rubHoldTimer = stopDelay;
+    }
+
     void OnTriggerStay(Collider other)
     {
-        // Only process when the overlap comes from the assigned trigger
-        if (towelTrigger == null || !ReferenceEquals(other, other)) { /* placeholder to keep method */ }
+        // Estimate towel speed no matter what we hit (we’ll gate by wetness below)
+        float speed = (transform.position - _lastPos).magnitude / Mathf.Max(Time.deltaTime, 1e-5f);
 
-        // We can�t filter which collider invoked OnTriggerStay directly,
-        // so ensure ONLY the towelTrigger has 'isTrigger = true'.
-        // Any physics colliders on this rigidbody should be non-trigger.
-
-        var sample = other.GetComponentInParent<RockSample>();
-        if (sample == null) return;
-
-        if (!string.IsNullOrEmpty(sampleTag))
+        // Is there at least one overlapped sample that is NOT dry?
+        bool anyWet = false;
+        foreach (var s in _overlappingSamples)
         {
-            if (!other.CompareTag(sampleTag) && !sample.gameObject.CompareTag(sampleTag))
-                return;
+            if (s != null && !s.IsDry) { anyWet = true; break; }
         }
 
-        float speed = (transform.position - _lastPos).magnitude / Mathf.Max(Time.deltaTime, 1e-5f);
-        if (speed < minSpeedForDrying) { _lastPos = transform.position; return; }
+        // You’re “rubbing” only if moving fast enough AND still overlapping a wet rock
+        bool rubbingNow = speed >= minSpeedForDrying && anyWet;
 
-        float t = Mathf.InverseLerp(minSpeedForDrying, maxSpeedForFullIntensity, speed);
-        sample.DryStep(Time.deltaTime * Mathf.Clamp01(t));
+        // Drive loop SFX
+        HandleRubLoop(rubbingNow);
+
+        // Apply drying to the specific sample we’re staying with (if it’s wet)
+        if (rubbingNow)
+        {
+            var sample = GetSample(other);
+            if (sample != null && !sample.IsDry)
+            {
+                float t = Mathf.InverseLerp(minSpeedForDrying, maxSpeedForFullIntensity, speed);
+                sample.DryStep(Time.deltaTime * Mathf.Clamp01(t));
+            }
+        }
 
         _lastPos = transform.position;
     }
@@ -72,5 +104,61 @@ public class DryingTowel : MonoBehaviour
     void LateUpdate()
     {
         _lastPos = transform.position;
+
+        // If we’re not overlapping anything wet, count down toward stopping loop
+        if (_overlappingSamples.Count == 0 && rubLoopSource != null && rubLoopSource.isPlaying)
+        {
+            if (_rubHoldTimer > 0f)
+            {
+                _rubHoldTimer -= Time.deltaTime;
+                if (_rubHoldTimer <= 0f) rubLoopSource.Stop();
+            }
+        }
+    }
+
+    RockSample GetSample(Collider other)
+    {
+        // tag filter (optional)
+        if (!string.IsNullOrEmpty(sampleTag))
+        {
+            if (!other.CompareTag(sampleTag) && !other.transform.root.CompareTag(sampleTag))
+                return null;
+        }
+        return other.GetComponentInParent<RockSample>();
+    }
+
+    void HandleRubLoop(bool rubbingNow)
+    {
+        if (rubLoopSource == null) return;
+
+        if (rubbingNow)
+        {
+            _rubHoldTimer = 0f;
+            if (!rubLoopSource.isPlaying)
+            {
+                rubLoopSource.loop = true;
+                rubLoopSource.Play();
+            }
+        }
+        else
+        {
+            // If not rubbing, start/continue the grace period
+            if (_overlappingSamples.Count == 0)
+            {
+                if (rubLoopSource.isPlaying && _rubHoldTimer <= 0f)
+                    _rubHoldTimer = stopDelay;
+            }
+            else
+            {
+                // Overlapping but not rubbing (too slow or all dry) → stop after delay
+                if (rubLoopSource.isPlaying)
+                {
+                    if (_rubHoldTimer <= 0f) _rubHoldTimer = stopDelay;
+                    _rubHoldTimer -= Time.deltaTime;
+                    if (_rubHoldTimer <= 0f) rubLoopSource.Stop();
+                }
+            }
+        }
     }
 }
+

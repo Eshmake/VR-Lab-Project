@@ -24,6 +24,9 @@ public class BowlSpawnInteractable : MonoBehaviour
     [Tooltip("Invoked when a rock is spawned (after it is handed to the interactor).")]
     public UnityEvent<GameObject> onRockSpawned = new UnityEvent<GameObject>();
 
+    [Header("Rock Spawn Audio")]
+    public AudioSource rockAudio;
+
     // runtime
     UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable _zone;
     GameObject _currentActive;
@@ -97,8 +100,13 @@ public class BowlSpawnInteractable : MonoBehaviour
         interactionManager.SelectExit(interactor, _zone);
         interactionManager.SelectEnter(interactor, grab);
 
-        // 🔔 let listeners (DryingStage) know a pickup happened
+        //let listeners (DryingStage) know a pickup happened
         onRockSpawned.Invoke(go);
+
+        if(rockAudio != null)
+        {
+            rockAudio.Play();
+        }
 
         // track lifecycle to allow re-spawn later
         var life = go.GetComponent<RockLifecycleNotifier>();
