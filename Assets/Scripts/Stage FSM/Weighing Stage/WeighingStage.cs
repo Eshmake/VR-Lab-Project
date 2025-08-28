@@ -6,22 +6,55 @@ public class WeighingStage : StageBase
     public AudioSource stageInstructions;
     public AudioSource stageComplete;
     public AudioDelayPlayer audioPlayer;
-   
+
+
+    [Header("Snap Zone")]
+    public GameObject snapZone;
+
+    [Header("Snap Watcher")]
+    public SocketWatcher scaleWatcher;
+
+    [Header("Text Panel Controller Script")]
+    public TextPanelController textChanger;
+
+
+    private bool IsSnapped = false;
+    private string requiredTag = "Bowl 2";
+
 
     public override void Enter()
     {
+    
+
+        if (audioPlayer && stageInstructions)
+            audioPlayer.PlayAfterDelay(stageInstructions, 5f);
+
         IsComplete = false;
-        
+
+        if(snapZone != null)
+            snapZone.SetActive(true);
+
+
+        if (scaleWatcher)
+        {
+            scaleWatcher.onSnapped.AddListener(OnBowlSnappedOnScale);
+        }
+
     }
 
     public override void UpdateStage()
     {
-        // Event-driven; nothing needed per frame
+        if (IsSnapped)
+            IsComplete = true;
+
     }
 
     public override void Exit()
     {
-        
+        if (scaleWatcher)
+        {
+            scaleWatcher.onSnapped.RemoveListener(OnBowlSnappedOnScale);
+        }
 
         if (audioPlayer && stageComplete)
             audioPlayer.PlayAfterDelay(stageComplete, 2f);
@@ -30,9 +63,22 @@ public class WeighingStage : StageBase
 
     public override string GetInstructionText()
     {
-        return "";
+        return "test stage 5";
     }
 
-    
-   
+    private void OnBowlSnappedOnScale(GameObject snapped)
+    {
+
+        if (snapped == null || !snapped.CompareTag(requiredTag))
+            return;
+        else
+        {
+            textChanger.setSSDText();
+            IsSnapped = true;
+        }
+           
+    }
+
+
+
 }

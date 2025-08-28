@@ -3438,6 +3438,52 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 147476554}
   m_Mesh: {fileID: 509236913192677251, guid: b1ecd799bf2d5fb42b96d9bc8151eec6, type: 3}
+--- !u!1 &159553084
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 159553086}
+  - component: {fileID: 159553085}
+  m_Layer: 0
+  m_Name: Text Panel Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &159553085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159553084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 771eefc4b47c89c4abf97d13aaf393ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textElement: {fileID: 261039531}
+  format: '{0}'
+--- !u!4 &159553086
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159553084}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 702504736}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &165798225
 GameObject:
   m_ObjectHideFlags: 0
@@ -6581,7 +6627,7 @@ Transform:
   m_GameObject: {fileID: 258509995}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.004, y: 0.001, z: 0}
+  m_LocalPosition: {x: -0.023, y: 0.083, z: 0.022}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6685,7 +6731,7 @@ GameObject:
   - component: {fileID: 261039532}
   - component: {fileID: 261039531}
   m_Layer: 5
-  m_Name: Intro Text
+  m_Name: Scale Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8837,6 +8883,9 @@ MonoBehaviour:
   stageInstructions: {fileID: 1161537099}
   stageComplete: {fileID: 1786780706}
   audioPlayer: {fileID: 527685523}
+  snapZone: {fileID: 450794496}
+  scaleWatcher: {fileID: 450794498}
+  textChanger: {fileID: 159553085}
 --- !u!1 &338340652
 GameObject:
   m_ObjectHideFlags: 0
@@ -11801,7 +11850,7 @@ Transform:
   m_GameObject: {fileID: 450794496}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.038, y: 0.027, z: -0.612}
+  m_LocalPosition: {x: -0.038, y: 0.065, z: -0.612}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -11822,7 +11871,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   socket: {fileID: 450794499}
   allowedTags:
+  - Snappable
   - Bowl
+  - Bowl 2
   onSnapped:
     m_PersistentCalls:
       m_Calls: []
@@ -11878,6 +11929,7 @@ MonoBehaviour:
   allowedTags:
   - Snappable
   - Bowl
+  - Bowl 2
   snapAudioSource: {fileID: 1021716506}
   adjustColliderConvex: 1
 --- !u!65 &450794500
@@ -23784,6 +23836,7 @@ MonoBehaviour:
   allowedTags:
   - Snappable
   - Bowl
+  - Bowl 2
   snapAudioSource: {fileID: 1021716506}
   adjustColliderConvex: 1
 --- !u!65 &674684186
@@ -24889,6 +24942,7 @@ Transform:
   - {fileID: 1099791610}
   - {fileID: 784113644}
   - {fileID: 507205508}
+  - {fileID: 159553086}
   - {fileID: 1984262313}
   - {fileID: 1672427074}
   m_Father: {fileID: 0}
@@ -43601,6 +43655,7 @@ MonoBehaviour:
   - {fileID: 737964122}
   - {fileID: 2029739575}
   - {fileID: 742273772}
+  - {fileID: 337123051}
 --- !u!1 &1047188980
 GameObject:
   m_ObjectHideFlags: 0
@@ -50098,7 +50153,7 @@ GameObject:
   - component: {fileID: 1315740362}
   m_Layer: 0
   m_Name: bowl 2
-  m_TagString: Bowl
+  m_TagString: Bowl 2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -58526,6 +58581,7 @@ MonoBehaviour:
   allowedTags:
   - Snappable
   - Bowl
+  - Bowl 2
   snapAudioSource: {fileID: 1021716506}
   adjustColliderConvex: 1
 --- !u!65 &1668167303
@@ -73200,7 +73256,7 @@ GameObject:
   - component: {fileID: 2080626521}
   - component: {fileID: 2080626520}
   m_Layer: 5
-  m_Name: Intro Title
+  m_Name: Title Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -109175,6 +109231,7 @@ MonoBehaviour:
   allowedTags:
   - Snappable
   - Bowl
+  - Bowl 2
   snapAudioSource: {fileID: 1021716506}
   adjustColliderConvex: 1
 --- !u!33 &8136401935820067713
