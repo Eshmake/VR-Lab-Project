@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-public class WeighingStage : StageBase
+public class SubmergeStage : StageBase
 {
     [Header("Audio (optional)")]
     public AudioSource stageInstructions;
@@ -17,28 +17,22 @@ public class WeighingStage : StageBase
     [Header("Text Panel Controller Script")]
     public TextPanelController textChanger;
 
-    [Header("Scale Text Bridge")]
-    public ScaleReadoutBridge readoutBridge;
-
-    [Header("Weight Output")]
-    public float bowlWeight = 313.313f;
-    public string weightFormat = "{0:0.000}";
-
 
     private bool IsSnapped = false;
+
     private string requiredTag = "Bowl 2";
 
 
     public override void Enter()
     {
-    
+
 
         if (audioPlayer && stageInstructions)
             audioPlayer.PlayAfterDelay(stageInstructions, 5f);
 
         IsComplete = false;
 
-        if(snapZone != null)
+        if (snapZone != null)
             snapZone.SetActive(true);
 
 
@@ -75,17 +69,15 @@ public class WeighingStage : StageBase
 
     private void OnBowlSnappedOnScale(GameObject snapped)
     {
-       
+        /*
         if (snapped == null || !snapped.CompareTag(requiredTag))
-        {
             return;
-        }
         else
         {
-            readoutBridge.ShowWeight(bowlWeight, weightFormat);
+            textChanger.setSSDText("313.313");
             IsSnapped = true;
         }
-           
+        */
     }
 
 
