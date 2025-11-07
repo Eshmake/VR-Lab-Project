@@ -12,6 +12,7 @@ TagManager:
   - Sample
   - PlayerHand
   - Bowl 2
+  - WireBucket
   layers:
   - Default
   - TransparentFX

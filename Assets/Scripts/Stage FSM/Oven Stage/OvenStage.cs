@@ -2,20 +2,21 @@ using UnityEngine;
 using System.Collections;
 
 
-public class SubmergeStage : StageBase, IShovelFlowHandler
+public class OvenStage : StageBase, IShovelFlowHandler
 {
     [Header("Audio")]
     public AudioSource stageInstructions;
     public AudioSource stageComplete;
     public AudioSource finalNote;
-    public AudioSource submergeSound;
+    public AudioSource ovenSound;
+    public AudioSource ovenDone;
     public AudioDelayPlayer audioPlayer;
 
     [Header("Snap Zone")]
     public GameObject snapZone;
 
     [Header("Snap Watcher")]
-    public SocketWatcher scaleWatcher;
+    public SocketWatcher snapWatcher;
 
     [Header("Text Panel Controller Script")]
     public TextPanelController textChanger;
@@ -28,10 +29,13 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
     public GameObject bowlZoneObject;
 
     [Header("Stone Layers")]
-    public GameObject hangDryLayer;
     public GameObject hangWetLayer;
-    public GameObject bowlLayer;
+    public GameObject bowlWetLayer;
+    public GameObject bowlDryLayer;
     public GameObject shovelLayer;
+
+
+    public PokeButtonHandler pokeButton;
 
 
     private DirtTriggerZone hangZoneTrigger = null;
@@ -44,9 +48,10 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
 
     private bool IsSnapped = false;
     private bool IsFilled = false;
+    private bool IsPoked = false;
 
 
-    private string requiredTag = "WireBucket";
+    private string requiredTag = "Bowl 2";
 
 
     public override void Enter()
@@ -55,7 +60,7 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
         IsComplete = false;
 
         if (audioPlayer && stageInstructions)
-            audioPlayer.PlayAfterDelay(stageInstructions, 5f);
+            audioPlayer.PlayAfterDelay(stageInstructions, 9f);
 
 
         if (snapZone != null)
@@ -79,16 +84,28 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
         }
 
 
-        if (scaleWatcher)
+        if (snapWatcher)
         {
-            scaleWatcher.onSnapped.AddListener(OnBowlSnappedOnScale);
+            snapWatcher.onSnapped.AddListener(OnBowlSnappedOnScale);
         }
 
     }
 
+
+    
+
+    void Update()
+    {
+        if(pokeButton != null && pokeButton.IsPressed && IsSnapped)
+        {
+            StartCoroutine(SnapRoutine());
+            IsPoked = true;
+        }
+    }
+
     public override void UpdateStage()
     {
-        if (IsSnapped)
+        if (IsPoked)
             IsComplete = true;
 
     }
@@ -103,13 +120,13 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
     private IEnumerator ExitRoutine()
     {
         if (audioPlayer && finalNote)
-            audioPlayer.PlayAfterDelay(finalNote, 2f);
+            audioPlayer.PlayAfterDelay(finalNote, 3f);
 
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(12f);
 
-        if (scaleWatcher)
+        if (snapWatcher)
         {
-            scaleWatcher.onSnapped.RemoveListener(OnBowlSnappedOnScale);
+            snapWatcher.onSnapped.RemoveListener(OnBowlSnappedOnScale);
         }
 
         if (hangZoneObject != null)
@@ -129,7 +146,7 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
 
     public override string GetInstructionText()
     {
-        return "test stage 5";
+        return "test stage 6";
     }
 
     private void OnBowlSnappedOnScale(GameObject snapped)
@@ -140,48 +157,51 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
         }
         else
         {
-            readoutBridge.ShowWeight(hangWeight, weightFormat);
-
-            audioPlayer.PlayAfterDelay(submergeSound, 0.5f);
-
-            hangDryLayer.SetActive(false);
-
-            if(hangWetLayer != null)
-                hangWetLayer.SetActive(true);
-
             IsSnapped = true;
         }
 
+    }
 
+
+    IEnumerator SnapRoutine()
+    {
+        ovenSound.Play();
+        yield return new WaitForSeconds(10f);
+        ovenSound.Stop();
+
+        bowlWetLayer.SetActive(false);
+        bowlDryLayer.SetActive(true);
+
+        ovenDone.Play();
     }
 
 
     public void OnShovelFilled(ShovelDirt shovel)
     {
-        
-        if (shovelLayer != null && bowlLayer != null)
+
+        if (shovelLayer != null && hangWetLayer != null)
         {
-            bowlLayer.SetActive(false);
+            hangWetLayer.SetActive(false);
             shovelLayer.SetActive(true);
         }
-        
+
 
     }
 
     public void OnShovelDumped(ShovelDirt shovel)
     {
-        
-        if (shovelLayer != null && hangDryLayer != null)
+
+        if (shovelLayer != null && bowlWetLayer != null)
         {
             shovelLayer.SetActive(false);
-            hangDryLayer.SetActive(true);
+            bowlWetLayer.SetActive(true);
         }
 
         hangZoneTrigger.isActive = false;
         bowlZoneTrigger.isActive = false;
 
         IsFilled = true;
-       
+
 
     }
 
