@@ -100,7 +100,7 @@ public class ShovelingStage : StageBase, IShovelFlowHandler
 
     public override string GetInstructionText()
     {
-        return "Fill the bucket with dirt using the shovel.";
+        return "1. Snap bucket to the ground plate near the pail of dirt.\n\n2. Using the shovel, shovel dirt 3 times from the pail into the bucket.";
     }
 
 

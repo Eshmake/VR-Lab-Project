@@ -105,7 +105,7 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
         if (audioPlayer && finalNote)
             audioPlayer.PlayAfterDelay(finalNote, 2f);
 
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(8f);
 
         if (scaleWatcher)
         {
@@ -129,7 +129,7 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
 
     public override string GetInstructionText()
     {
-        return "test stage 5";
+        return "1. Snap both the red bowl and wire basket on top of the cabinets.\n\n2. Using the trowel, pour the sample from the bowl into the basket.\n\n3. Snap the basket below the scale in the barrel of water, to fully submerge it.\n\n4. Take note of the weight, as it is the value C in your final calculations.";
     }
 
     private void OnBowlSnappedOnScale(GameObject snapped)

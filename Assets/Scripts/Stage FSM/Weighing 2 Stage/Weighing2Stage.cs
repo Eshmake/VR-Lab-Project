@@ -34,7 +34,7 @@ public class Weighing2Stage : StageBase
 
 
         if (audioPlayer && stageInstructions)
-            audioPlayer.PlayAfterDelay(stageInstructions, 17f);
+            audioPlayer.PlayAfterDelay(stageInstructions, 20f);
 
         IsComplete = false;
 
@@ -70,7 +70,7 @@ public class Weighing2Stage : StageBase
 
     public override string GetInstructionText()
     {
-        return "test stage 5";
+        return "1. Remove the bowl from the oven, and snap it to the attach plate on top of the scale again to weigh the oven-dried sample.\n\n2. Take note of the weight, as it is the value A in your final calculations.";
     }
 
     private void OnBowlSnappedOnScale(GameObject snapped)

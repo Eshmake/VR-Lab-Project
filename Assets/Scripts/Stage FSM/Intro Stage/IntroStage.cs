@@ -52,7 +52,7 @@ public class IntroStage : StageBase
 
     public override string GetInstructionText()
     {
-        return "Listen to the introduction and enter the lab.";
+        return "Listen to the introduction and enter the lab";
     }
 
     public void NotifyEntry()

@@ -40,7 +40,7 @@ public class FinalStage : StageBase
 
     public override string GetInstructionText()
     {
-        return "Final Stage";
+        return "View your results, and then exit the lab.";
     }
 
     public void ButtonClicked()

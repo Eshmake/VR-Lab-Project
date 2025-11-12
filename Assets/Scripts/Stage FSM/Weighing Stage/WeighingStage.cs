@@ -70,7 +70,7 @@ public class WeighingStage : StageBase
 
     public override string GetInstructionText()
     {
-        return "test stage 5";
+        return "1. Grab red bowl with the dried aggregate, and snap it to the attach plate on top of the scale.\n\n2. Make note of the weight, as it is the value B in your final calculations.";
     }
 
     private void OnBowlSnappedOnScale(GameObject snapped)

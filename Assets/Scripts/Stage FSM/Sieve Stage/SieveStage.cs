@@ -143,7 +143,7 @@ public class SieveStage : StageBase, IShovelFlowHandler
 
     public override string GetInstructionText()
     {
-        return "Use the workbench to pour dirt from the bucket into the sieve, and then sieve the dirt";
+        return "1. Snap the bucket and sieve to the attach plates on the cabinets.\n\n2. Using the trowel pour one sample from the bucket into the sieve.\n\n3. Shake the sieve until smaller material in the aggregate is sufficiently filtered.";
     }
 
 

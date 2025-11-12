@@ -87,7 +87,7 @@ public class DryingStage : StageBase
 
     public override string GetInstructionText()
     {
-        return $"Reach into the bowl to spawn a wet stone, dry it with the towel, then place it in the destination bowl ({_collected}/{samplesRequired}).";
+        return $"1. Snap the blue bowl and the red bowl on top of the cabinets.\n\n2. Grab each rock from the blue bowl, and rub the towel against the rock until you hear a noise indicating it is dried.\n\n3. Place the rock in the red bowl ({_collected}/{samplesRequired}).";
     }
 
     // Called each time a rock is spawned into the player's hand from the source bowl

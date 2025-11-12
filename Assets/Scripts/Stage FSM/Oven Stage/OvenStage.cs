@@ -60,7 +60,7 @@ public class OvenStage : StageBase, IShovelFlowHandler
         IsComplete = false;
 
         if (audioPlayer && stageInstructions)
-            audioPlayer.PlayAfterDelay(stageInstructions, 9f);
+            audioPlayer.PlayAfterDelay(stageInstructions, 14f);
 
 
         if (snapZone != null)
@@ -122,7 +122,7 @@ public class OvenStage : StageBase, IShovelFlowHandler
         if (audioPlayer && finalNote)
             audioPlayer.PlayAfterDelay(finalNote, 3f);
 
-        yield return new WaitForSeconds(12f);
+        yield return new WaitForSeconds(17f);
 
         if (snapWatcher)
         {
@@ -146,7 +146,7 @@ public class OvenStage : StageBase, IShovelFlowHandler
 
     public override string GetInstructionText()
     {
-        return "test stage 6";
+        return "1. Snap both the basket and red bowl on top of the cabinets.\n\n2. Using the trowel, pour the sample from the bucket back into the red bowl.\n\n3. Snap the red bowl to the attach plate inside the oven, close the oven doors, and press the red button.";
     }
 
     private void OnBowlSnappedOnScale(GameObject snapped)
@@ -166,7 +166,7 @@ public class OvenStage : StageBase, IShovelFlowHandler
     IEnumerator SnapRoutine()
     {
         ovenSound.Play();
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(14f);
         ovenSound.Stop();
 
         bowlWetLayer.SetActive(false);

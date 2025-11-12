@@ -142,7 +142,7 @@ public class WashingStage : StageBase, IShovelFlowHandler
 
     public override string GetInstructionText()
     {
-        return "Pour from sieve into bowl, then snap the bowl into the sink.";
+        return "1. Snap sieve and blue bowl on top of the cabinets, and using the trowel, pour the sample from the sieve into the bowl.\n\n2. Snap bowl into the sink, and pour water onto sample until a bubble noise is heard.\n\n3. After bubble noise, return handle to its resting state, and snap the bowl to the cabinet attach plate nearest to the sink.";
     }
 
     // --- Socket callbacks ---
