@@ -3,9 +3,10 @@ using System.Collections;
 
 public class ShovelingStage : StageBase, IShovelFlowHandler
 {
-    public AudioSource stageInstructions;
+    public AudioSource stageInstructions1;
+    public AudioSource stageInstructions2;
+
     public AudioSource stageComplete;
-    public AudioDelayPlayer audioPlayer;
 
     public GameObject snapZone;
 
@@ -18,6 +19,7 @@ public class ShovelingStage : StageBase, IShovelFlowHandler
 
     private DirtTriggerZone bucketZoneTrigger = null;
     private DirtTriggerZone pailZoneTrigger = null;
+
 
     public void OnShovelFilled(ShovelDirt shovel)
     {
@@ -45,13 +47,21 @@ public class ShovelingStage : StageBase, IShovelFlowHandler
 
     public void OnBucketSnapped(GameObject bucket)
     {
-        // NA
+        audioPlayer.PlayAfterDelay(stageInstructions2, 1f);
     }
 
     public override void Enter()
     {
+
+        audioPlayer.SetScope(audioScope);
+
+        var forwarder = snapZone.GetComponent<SnapZoneForwarder>();
+        if (forwarder != null)
+            forwarder.SetStage(this);
+
+
         IsComplete = false;
-        audioPlayer.PlayAfterDelay(stageInstructions, 5f);
+        audioPlayer.PlayAfterDelay(stageInstructions1, 5f);
 
         bucketZoneTrigger = bucketZoneObject.GetComponent<DirtTriggerZone>();
         pailZoneTrigger = pailZoneObject.GetComponent<DirtTriggerZone>();
@@ -94,6 +104,8 @@ public class ShovelingStage : StageBase, IShovelFlowHandler
 
         bucketZoneObject = null;
         pailZoneObject = null;
+
+        base.EndAudio();
 
         audioPlayer.PlayAfterDelay(stageComplete, 2f);
     }

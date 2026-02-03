@@ -3,7 +3,9 @@ using UnityEngine;
 public class Weighing2Stage : StageBase
 {
     [Header("Audio (optional)")]
-    public AudioSource stageInstructions;
+    public AudioSource stageInstructions1;
+    public AudioSource stageInstructions2;
+
     public AudioSource stageComplete;
     public AudioDelayPlayer audioPlayer;
 
@@ -21,7 +23,7 @@ public class Weighing2Stage : StageBase
     public ScaleReadoutBridge readoutBridge;
 
     [Header("Weight Output")]
-    public float bowlWeight = 313.313f;
+    public float bowlWeight = 3.984f;
     public string weightFormat = "{0:0.000}";
 
 
@@ -33,8 +35,10 @@ public class Weighing2Stage : StageBase
     {
 
 
-        if (audioPlayer && stageInstructions)
-            audioPlayer.PlayAfterDelay(stageInstructions, 20f);
+        if (audioPlayer && stageInstructions1)
+            audioPlayer.PlayAfterDelay(stageInstructions1, 20f);
+            // audio 1
+
 
         IsComplete = false;
 
@@ -63,8 +67,13 @@ public class Weighing2Stage : StageBase
             scaleWatcher.onSnapped.RemoveListener(OnBowlSnappedOnScale);
         }
 
+        audioPlayer.PlayAfterDelay(stageInstructions2, 1f);
+
+        base.EndAudio();
+
         if (audioPlayer && stageComplete)
-            audioPlayer.PlayAfterDelay(stageComplete, 2f);
+            audioPlayer.PlayAfterDelay(stageComplete, 5f);
+            // audio 2
 
     }
 

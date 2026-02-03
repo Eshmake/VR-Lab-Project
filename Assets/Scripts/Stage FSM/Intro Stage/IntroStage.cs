@@ -12,12 +12,13 @@ public class IntroStage : StageBase
     public GameObject door;
     public GameObject lights;
 
-    public AudioDelayPlayer audioPlayer;
-
     private bool enteredLab = false;
 
     public override void Enter()
     {
+
+        audioPlayer.SetScope(audioScope);
+
         introPanel.SetActive(true);
         door.SetActive(false);
         lights.SetActive(false);
@@ -40,7 +41,9 @@ public class IntroStage : StageBase
             IsComplete = true;
             doorShut.Play();
 
-            audioPlayer.PlayAfterDelay(ambience, 2f);
+            base.EndAudio();
+
+            ambience.Play();
         }
 
     }

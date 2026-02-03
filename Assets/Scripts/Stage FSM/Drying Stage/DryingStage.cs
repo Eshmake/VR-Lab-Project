@@ -5,7 +5,6 @@ public class DryingStage : StageBase
     [Header("Audio (optional)")]
     public AudioSource stageInstructions;
     public AudioSource stageComplete;
-    public AudioDelayPlayer audioPlayer;
 
     [Header("Flow")]
     public DestinationCollector destinationCollector;
@@ -34,9 +33,12 @@ public class DryingStage : StageBase
         _pickups = 0;
         _lastStepIndex = -1;
 
+        audioPlayer.SetScope(audioScope);
+
 
         if (audioPlayer && stageInstructions)
             audioPlayer.PlayAfterDelay(stageInstructions, 5f);
+            // audio 1
 
         if (destinationCollector != null)
             destinationCollector.onCollected.AddListener(OnSampleCollected);
@@ -75,6 +77,8 @@ public class DryingStage : StageBase
 
         if (_spawner != null)
             _spawner.onRockSpawned.RemoveListener(OnRockSpawnedFromSource);
+
+        base.EndAudio();
 
         if (audioPlayer && stageComplete)
             audioPlayer.PlayAfterDelay(stageComplete, 2f);

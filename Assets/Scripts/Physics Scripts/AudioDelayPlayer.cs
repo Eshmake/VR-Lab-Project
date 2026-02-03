@@ -1,37 +1,39 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioDelayPlayer : MonoBehaviour
 {
-    /// <summary>
-    /// Plays an AudioSource after a specified delay.
-    /// </summary>
-    public void PlayAfterDelay(AudioSource source, float delay)
+    private StageAudioScope scope;
+    private readonly List<Coroutine> active = new();
+
+    public void SetScope(StageAudioScope newScope)
     {
-        if (source != null)
-            StartCoroutine(PlayWithDelay(source, delay));
+        scope = newScope;
     }
 
-    /// <summary>
-    /// Stops an AudioSource after an optional delay.
-    /// </summary>
-    public void StopAfterDelay(AudioSource source, float delay = 0f)
+    public void PlayAfterDelay(AudioSource src, float delaySeconds)
     {
-        if (source != null)
-            StartCoroutine(StopWithDelay(source, delay));
+        if (!src || scope == null) return;
+        active.Add(StartCoroutine(PlayDelayed(src, delaySeconds)));
     }
 
-    private IEnumerator PlayWithDelay(AudioSource source, float delay)
+    public void CancelAllDelayed()
+    {
+        foreach (var c in active)
+            if (c != null) StopCoroutine(c);
+
+        active.Clear();
+    }
+
+    IEnumerator PlayDelayed(AudioSource src, float delay)
     {
         yield return new WaitForSeconds(delay);
-        source.Play();
-    }
 
-    private IEnumerator StopWithDelay(AudioSource source, float delay)
-    {
-        if (delay > 0f)
-            yield return new WaitForSeconds(delay);
+        if (!src) yield break;
 
-        source.Stop();
+        scope.Register(src);
+        src.Play();
     }
 }
+

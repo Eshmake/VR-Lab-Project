@@ -3,10 +3,14 @@ using System.Collections;
 
 public class SieveStage : StageBase, IShovelFlowHandler
 {
-    public AudioSource stageInstructions;
+    public AudioSource stageInstructions1;
+    public AudioSource stageInstructions2;
+    public AudioSource stageInstructions3;
+
+
+
     public AudioSource stageComplete;
     public AudioSource sieveShakeLoop;
-    public AudioDelayPlayer audioPlayer;
 
     public GameObject snapZone1;
     public GameObject snapZone2;
@@ -24,6 +28,15 @@ public class SieveStage : StageBase, IShovelFlowHandler
 
     private DirtTriggerZone bucketZoneTrigger = null;
     private DirtTriggerZone sieveZoneTrigger = null;
+
+
+    private bool bucketSnapped;
+    private bool sieveSnapped;
+
+    private GameObject snappedBucket;
+    private GameObject snappedSieve;
+
+    private bool bothSnappedAudioPlayed;
 
 
     public void OnShovelFilled(ShovelDirt shovel)
@@ -49,6 +62,9 @@ public class SieveStage : StageBase, IShovelFlowHandler
 
         horizontal.enabled = true;
 
+        audioPlayer.PlayAfterDelay(stageInstructions3, 1f);
+        // audio 3
+
     }
 
     public void OnBucketSnapped(GameObject bucket)
@@ -57,10 +73,52 @@ public class SieveStage : StageBase, IShovelFlowHandler
     }
 
 
+    public void OnAnyItemSnapped(GameObject go)
+    {
+        // Identify type by TAG (recommended)
+        if (!bucketSnapped && go.CompareTag("Snappable"))
+        {
+            bucketSnapped = true;
+            snappedBucket = go;
+        }
+        else if (!sieveSnapped && go.CompareTag("Sieve"))
+        {
+            sieveSnapped = true;
+            snappedSieve = go;
+        }
+        else
+        {
+            // Something else snapped, or it was a duplicate bucket/sieve snap
+            return;
+        }
+
+        // When BOTH are snapped, do your “proceed” behavior once
+        if (bucketSnapped && sieveSnapped && !bothSnappedAudioPlayed)
+        {
+            bothSnappedAudioPlayed = true;
+
+            audioPlayer.PlayAfterDelay(stageInstructions2, 1f);
+            // audio 2
+
+        }
+    }
+
+
+
     public override void Enter()
     {
+        audioPlayer.SetScope(audioScope);
+
         IsComplete = false;
-        audioPlayer.PlayAfterDelay(stageInstructions, 5f);
+        audioPlayer.PlayAfterDelay(stageInstructions1, 5f);
+        // audio 1
+
+
+        bucketSnapped = false;
+        sieveSnapped = false;
+        snappedBucket = null;
+        snappedSieve = null;
+        bothSnappedAudioPlayed = false;
 
 
         bucketZoneTrigger = bucketZoneObject.GetComponent<DirtTriggerZone>();
@@ -84,6 +142,15 @@ public class SieveStage : StageBase, IShovelFlowHandler
             sieveZoneTrigger.isActive = true;
         }
 
+
+        var f1 = snapZone1.GetComponent<SnapZoneForwarderAny>();
+        if (f1 != null) f1.SetStage(this);
+
+        var f2 = snapZone2.GetComponent<SnapZoneForwarderAny>();
+        if (f2 != null) f2.SetStage(this);
+
+        var f3 = snapZone3.GetComponent<SnapZoneForwarderAny>();
+        if (f3 != null) f3.SetStage(this);
 
     }
 
@@ -136,6 +203,8 @@ public class SieveStage : StageBase, IShovelFlowHandler
 
         bucketZoneObject = null;
         sieveZoneObject = null;
+
+        base.EndAudio();
 
         audioPlayer.PlayAfterDelay(stageComplete, 2f);
 

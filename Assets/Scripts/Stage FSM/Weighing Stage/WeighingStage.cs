@@ -21,7 +21,7 @@ public class WeighingStage : StageBase
     public ScaleReadoutBridge readoutBridge;
 
     [Header("Weight Output")]
-    public float bowlWeight = 313.313f;
+    public float bowlWeight = 4.034f;
     public string weightFormat = "{0:0.000}";
 
 
@@ -35,6 +35,7 @@ public class WeighingStage : StageBase
 
         if (audioPlayer && stageInstructions)
             audioPlayer.PlayAfterDelay(stageInstructions, 5f);
+            //audio 1
 
         IsComplete = false;
 

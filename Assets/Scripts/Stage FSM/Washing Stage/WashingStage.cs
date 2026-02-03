@@ -3,7 +3,10 @@
 public class WashingStage : StageBase, IShovelFlowHandler
 {
     [Header("Audio")]
-    public AudioSource stageInstructions;
+    public AudioSource stageInstructions1;
+    public AudioSource stageInstructions2;
+    public AudioSource stageInstructions3;
+
     public AudioSource stageComplete;
     public AudioSource submerge;
     public AudioDelayPlayer audioPlayer;
@@ -14,12 +17,12 @@ public class WashingStage : StageBase, IShovelFlowHandler
     public GameObject sieveZoneObject;
 
     [Header("Snap Watchers")]
-    public SocketWatcher sinkWatcher;      // watcher on sink socket
-    public SocketWatcher counterWatcher;   // watcher on counter socket
+    public SocketWatcher sinkWatcher;
+    public SocketWatcher[] counterWatchers;   // all counter snap plates
 
     [Header("Snap Zones")]
     public GameObject sinkSnapZone;
-    public GameObject counterSnapZone;
+    public GameObject[] counterSnapZones;
 
     [Header("Layers")]
     public GameObject bowlLayerDry;
@@ -50,6 +53,9 @@ public class WashingStage : StageBase, IShovelFlowHandler
 
         bowlZoneTrigger.isActive = false;
         sieveZoneTrigger.isActive = false;
+
+        audioPlayer.PlayAfterDelay(stageInstructions2, 1f);
+        // audio 2
     }
 
     public void OnBucketSnapped(GameObject bucket) { /* N/A */ }
@@ -61,9 +67,16 @@ public class WashingStage : StageBase, IShovelFlowHandler
 
         if (faucet) faucet.ResetState();
 
-        if (audioPlayer && stageInstructions) audioPlayer.PlayAfterDelay(stageInstructions, 5f);
+        if (audioPlayer && stageInstructions1) audioPlayer.PlayAfterDelay(stageInstructions1, 5f);
+        // audio 1
 
-        if(counterSnapZone != null) { counterSnapZone.SetActive(true); }
+        if (counterSnapZones != null)
+        {
+            foreach (var z in counterSnapZones)
+            {
+                if (z != null) z.SetActive(true);
+            }
+        }
 
         if (sinkSnapZone != null) { sinkSnapZone.SetActive(true); }
 
@@ -86,10 +99,14 @@ public class WashingStage : StageBase, IShovelFlowHandler
             sinkWatcher.onSnapped.AddListener(OnBowlSnappedInSink);
             sinkWatcher.onUnsnapped.AddListener(OnBowlUnsnappedFromSink);
         }
-        if (counterWatcher)
+        if (counterWatchers != null)
         {
-            counterWatcher.onSnapped.AddListener(OnBowlSnappedOnCounter);
-            counterWatcher.onUnsnapped.AddListener(OnBowlUnsnappedFromCounter);
+            foreach (var w in counterWatchers)
+            {
+                if (w == null) continue;
+                w.onSnapped.AddListener(OnBowlSnappedOnCounter);
+                w.onUnsnapped.AddListener(OnBowlUnsnappedFromCounter);
+            }
         }
 
         if (faucet) faucet.ResetState();
@@ -117,6 +134,9 @@ public class WashingStage : StageBase, IShovelFlowHandler
                 bowlLayerDry.SetActive(false);
                 bowlLayerWet.SetActive(true);
             }
+
+            audioPlayer.PlayAfterDelay(stageInstructions3, 1f);
+            // audio 3
         }
             
     }
@@ -131,10 +151,14 @@ public class WashingStage : StageBase, IShovelFlowHandler
             sinkWatcher.onSnapped.RemoveListener(OnBowlSnappedInSink);
             sinkWatcher.onUnsnapped.RemoveListener(OnBowlUnsnappedFromSink);
         }
-        if (counterWatcher)
+        if (counterWatchers != null)
         {
-            counterWatcher.onSnapped.RemoveListener(OnBowlSnappedOnCounter);
-            counterWatcher.onUnsnapped.RemoveListener(OnBowlUnsnappedFromCounter);
+            foreach (var w in counterWatchers)
+            {
+                if (w == null) continue;
+                w.onSnapped.RemoveListener(OnBowlSnappedOnCounter);
+                w.onUnsnapped.RemoveListener(OnBowlUnsnappedFromCounter);
+            }
         }
 
         if (audioPlayer && stageComplete) audioPlayer.PlayAfterDelay(stageComplete, 2f);
@@ -142,7 +166,7 @@ public class WashingStage : StageBase, IShovelFlowHandler
 
     public override string GetInstructionText()
     {
-        return "1. Snap sieve and blue bowl on top of the cabinets, and using the trowel, pour the sample from the sieve into the bowl.\n\n2. Snap bowl into the sink, and pour water onto sample until a bubble noise is heard.\n\n3. After bubble noise, return handle to its resting state, and snap the bowl to the cabinet attach plate nearest to the sink.";
+        return "1. Snap sieve and blue bowl on top of the cabinets, and using the trowel, pour the sample from the sieve into the bowl.\n\n2. Snap bowl into the sink, and pour water onto sample until a bubble noise is heard.\n\n3. After bubble noise, return handle to its resting state, and snap the bowl back onto the counter.";
     }
 
     // --- Socket callbacks ---

@@ -17,7 +17,7 @@ public class TextPanelController : MonoBehaviour
     public void setSSDText()
     {
         if (textElement != null)
-            textElement.text = "313.313";
+            textElement.text = "000.000";
     }
 
     // New: set a numeric weight using a format string (e.g., \"{0:0.000} g\")

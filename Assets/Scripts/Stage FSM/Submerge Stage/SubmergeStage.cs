@@ -5,12 +5,13 @@ using System.Collections;
 public class SubmergeStage : StageBase, IShovelFlowHandler
 {
     [Header("Audio")]
-    public AudioSource stageInstructions;
+    public AudioSource stageInstructions1;
+    public AudioSource stageInstructions2;
+
     public AudioSource stageComplete;
     public AudioSource finalNote;
     public AudioSource submergeSound;
-    public AudioDelayPlayer audioPlayer;
-
+    
     [Header("Snap Zone")]
     public GameObject snapZone;
 
@@ -38,7 +39,7 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
     private DirtTriggerZone bowlZoneTrigger = null;
 
     [Header("Weight Output")]
-    public float hangWeight = 313.313f;
+    public float hangWeight = 3.129f;
     public string weightFormat = "{0:0.000}";
 
 
@@ -52,10 +53,13 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
     public override void Enter()
     {
 
+        audioPlayer.SetScope(audioScope);
+
         IsComplete = false;
 
-        if (audioPlayer && stageInstructions)
-            audioPlayer.PlayAfterDelay(stageInstructions, 5f);
+        if (audioPlayer && stageInstructions1)
+            audioPlayer.PlayAfterDelay(stageInstructions1, 5f);
+            // audio 1
 
 
         if (snapZone != null)
@@ -104,6 +108,7 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
     {
         if (audioPlayer && finalNote)
             audioPlayer.PlayAfterDelay(finalNote, 2f);
+            // audio 3
 
         yield return new WaitForSeconds(8f);
 
@@ -120,6 +125,8 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
 
         hangZoneObject = null;
         bowlZoneObject = null;
+
+        base.EndAudio();
 
         if (audioPlayer && stageComplete)
             audioPlayer.PlayAfterDelay(stageComplete, 2f);
@@ -181,7 +188,9 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
         bowlZoneTrigger.isActive = false;
 
         IsFilled = true;
-       
+
+        audioPlayer.PlayAfterDelay(stageInstructions2, 1f);
+        // audio 2
 
     }
 

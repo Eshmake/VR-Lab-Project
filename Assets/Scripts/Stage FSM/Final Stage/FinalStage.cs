@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 public class FinalStage : StageBase
 {
     public AudioSource finalAudio;
-    public AudioDelayPlayer audioPlayer;
 
     public GameObject resultsPanel;
 
@@ -15,10 +14,14 @@ public class FinalStage : StageBase
 
     public override void Enter()
     {
+
+        audioPlayer.SetScope(audioScope);
+
         resultsPanel.SetActive(true);
         IsComplete = false;
 
         audioPlayer.PlayAfterDelay(finalAudio, 5f);
+        // audio 1
 
     }
 
@@ -33,7 +36,7 @@ public class FinalStage : StageBase
 
     public override void Exit()
     {
-
+        base.EndAudio();
         SceneManager.LoadScene(0);
 
     }

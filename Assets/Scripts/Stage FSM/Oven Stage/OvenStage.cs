@@ -5,12 +5,13 @@ using System.Collections;
 public class OvenStage : StageBase, IShovelFlowHandler
 {
     [Header("Audio")]
-    public AudioSource stageInstructions;
+    public AudioSource stageInstructions1;
+    public AudioSource stageInstructions2;
+
     public AudioSource stageComplete;
     public AudioSource finalNote;
     public AudioSource ovenSound;
     public AudioSource ovenDone;
-    public AudioDelayPlayer audioPlayer;
 
     [Header("Snap Zone")]
     public GameObject snapZone;
@@ -41,10 +42,6 @@ public class OvenStage : StageBase, IShovelFlowHandler
     private DirtTriggerZone hangZoneTrigger = null;
     private DirtTriggerZone bowlZoneTrigger = null;
 
-    [Header("Weight Output")]
-    public float hangWeight = 313.313f;
-    public string weightFormat = "{0:0.000}";
-
 
     private bool IsSnapped = false;
     private bool IsFilled = false;
@@ -56,11 +53,13 @@ public class OvenStage : StageBase, IShovelFlowHandler
 
     public override void Enter()
     {
+        audioPlayer.SetScope(audioScope);
 
         IsComplete = false;
 
-        if (audioPlayer && stageInstructions)
-            audioPlayer.PlayAfterDelay(stageInstructions, 14f);
+        if (audioPlayer && stageInstructions1)
+            audioPlayer.PlayAfterDelay(stageInstructions1, 14f);
+            // audio 1
 
 
         if (snapZone != null)
@@ -138,8 +137,12 @@ public class OvenStage : StageBase, IShovelFlowHandler
         hangZoneObject = null;
         bowlZoneObject = null;
 
+
+        base.EndAudio();
+
         if (audioPlayer && stageComplete)
             audioPlayer.PlayAfterDelay(stageComplete, 2f);
+            // audio 3
 
 
     }
@@ -201,6 +204,9 @@ public class OvenStage : StageBase, IShovelFlowHandler
         bowlZoneTrigger.isActive = false;
 
         IsFilled = true;
+
+        audioPlayer.PlayAfterDelay(stageInstructions2, 1f);
+        // audio 2
 
 
     }
