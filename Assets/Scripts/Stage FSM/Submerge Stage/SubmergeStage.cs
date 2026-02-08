@@ -99,17 +99,14 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
 
     public override void Exit()
     {
-
+        
         StartCoroutine(ExitRoutine());
 
     }
 
     private IEnumerator ExitRoutine()
     {
-        if (audioPlayer && finalNote)
-            audioPlayer.PlayAfterDelay(finalNote, 2f);
-            // audio 3
-
+        
         yield return new WaitForSeconds(8f);
 
         if (scaleWatcher)
@@ -125,8 +122,6 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
 
         hangZoneObject = null;
         bowlZoneObject = null;
-
-        base.EndAudio();
 
         if (audioPlayer && stageComplete)
             audioPlayer.PlayAfterDelay(stageComplete, 2f);
@@ -149,7 +144,14 @@ public class SubmergeStage : StageBase, IShovelFlowHandler
         {
             readoutBridge.ShowWeight(hangWeight, weightFormat);
 
+            base.EndAudio();
+
             audioPlayer.PlayAfterDelay(submergeSound, 0.5f);
+
+
+            if (audioPlayer && finalNote)
+                audioPlayer.PlayAfterDelay(finalNote, 2.5f);
+            // audio 3
 
             hangDryLayer.SetActive(false);
 

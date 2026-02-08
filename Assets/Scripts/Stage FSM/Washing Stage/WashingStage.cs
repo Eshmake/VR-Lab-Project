@@ -9,7 +9,6 @@ public class WashingStage : StageBase, IShovelFlowHandler
 
     public AudioSource stageComplete;
     public AudioSource submerge;
-    public AudioDelayPlayer audioPlayer;
    
 
     [Header("Zones that receive shovel pour events")]
@@ -62,8 +61,11 @@ public class WashingStage : StageBase, IShovelFlowHandler
 
     public override void Enter()
     {
+
         IsComplete = false;
-      
+
+        audioPlayer.SetScope(audioScope);
+
 
         if (faucet) faucet.ResetState();
 
@@ -127,16 +129,16 @@ public class WashingStage : StageBase, IShovelFlowHandler
             {
                 submerge.Play();
                 submergePlayed = true;
+                audioPlayer.PlayAfterDelay(stageInstructions3, 2f);
+                // audio 3
             }
-            
+
             if (bowlLayerWet != null)
             {
                 bowlLayerDry.SetActive(false);
                 bowlLayerWet.SetActive(true);
             }
-
-            audioPlayer.PlayAfterDelay(stageInstructions3, 1f);
-            // audio 3
+            
         }
             
     }
@@ -160,6 +162,8 @@ public class WashingStage : StageBase, IShovelFlowHandler
                 w.onUnsnapped.RemoveListener(OnBowlUnsnappedFromCounter);
             }
         }
+
+        base.EndAudio();
 
         if (audioPlayer && stageComplete) audioPlayer.PlayAfterDelay(stageComplete, 2f);
     }

@@ -58,7 +58,7 @@ public class OvenStage : StageBase, IShovelFlowHandler
         IsComplete = false;
 
         if (audioPlayer && stageInstructions1)
-            audioPlayer.PlayAfterDelay(stageInstructions1, 14f);
+            audioPlayer.PlayAfterDelay(stageInstructions1, 12f);
             // audio 1
 
 
@@ -111,7 +111,7 @@ public class OvenStage : StageBase, IShovelFlowHandler
 
     public override void Exit()
     {
-
+        base.EndAudio();
         StartCoroutine(ExitRoutine());
 
     }
@@ -136,9 +136,6 @@ public class OvenStage : StageBase, IShovelFlowHandler
 
         hangZoneObject = null;
         bowlZoneObject = null;
-
-
-        base.EndAudio();
 
         if (audioPlayer && stageComplete)
             audioPlayer.PlayAfterDelay(stageComplete, 2f);

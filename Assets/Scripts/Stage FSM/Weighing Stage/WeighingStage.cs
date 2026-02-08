@@ -5,7 +5,6 @@ public class WeighingStage : StageBase
     [Header("Audio (optional)")]
     public AudioSource stageInstructions;
     public AudioSource stageComplete;
-    public AudioDelayPlayer audioPlayer;
 
 
     [Header("Snap Zone")]
@@ -31,7 +30,8 @@ public class WeighingStage : StageBase
 
     public override void Enter()
     {
-    
+
+        audioPlayer.SetScope(audioScope);
 
         if (audioPlayer && stageInstructions)
             audioPlayer.PlayAfterDelay(stageInstructions, 5f);
@@ -63,6 +63,8 @@ public class WeighingStage : StageBase
         {
             scaleWatcher.onSnapped.RemoveListener(OnBowlSnappedOnScale);
         }
+
+        base.EndAudio();
 
         if (audioPlayer && stageComplete)
             audioPlayer.PlayAfterDelay(stageComplete, 2f);
